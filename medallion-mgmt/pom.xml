@@ -10,7 +10,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.3.5.RELEASE</version>
+        <version>1.3.6.RELEASE</version>
     </parent>
     <dependencies>
         <dependency>
@@ -63,6 +63,10 @@
             <version>0.8.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-bus</artifactId>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -84,7 +88,6 @@
                 <configuration>
                     <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
                     <dockerDirectory>src/main/docker</dockerDirectory>
-                    <dockerHost>https://192.168.122.147:2376</dockerHost>
                     <resources>
                         <resource>
                             <directory>${project.build.directory}</directory>

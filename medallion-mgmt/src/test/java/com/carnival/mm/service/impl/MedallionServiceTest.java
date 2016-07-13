@@ -36,7 +36,12 @@ public class MedallionServiceTest {
         MockitoAnnotations.initMocks(this);
         this.allMedallions = new ArrayList<Medallion>();
         for(int i = 0; i <5; i++){
-            this.allMedallions.add(new Medallion("0000" + i+1, "TEST00" + i+1, "FirstName00" + i+1, "LastName00" + i+1));
+            Medallion medallion = new Medallion();
+            medallion.setId("0000" + i+1);
+            medallion.setHardwareId("TEST00" + i+1);
+            medallion.setFirstName("FirstName00" + i+1);
+            medallion.setLastName("LastName00" + i+1);
+            this.allMedallions.add(medallion);
         }
     }
 

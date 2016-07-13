@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -65,8 +64,13 @@ public class MedallionControllerTest {
 
     @Before
     public void setup() throws Exception {
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        this.medallion = new Medallion("123", "TEST123", "Tester", "Test");
+        this.medallion = new Medallion();
+        this.medallion.setId("123");
+        this.medallion.setHardwareId("TEST123");
+        this.medallion.setFirstName("FirstName");
+        this.medallion.setLastName("LastName");
         medallionRepository.save(this.medallion);
     }
 
@@ -79,7 +83,7 @@ public class MedallionControllerTest {
     public void testCreateMedallion() throws Exception {
 
         String medallionJson = json(this.medallion);
-        mockMvc.perform(post("/medallion")
+        mockMvc.perform(post("/medallionservice/v1/medallion")
                 .contentType(contentType)
                 .content(medallionJson))
                 .andExpect(status().isOk())
@@ -87,15 +91,21 @@ public class MedallionControllerTest {
     }
 
     @Test
-    public void testGetAllMedallions() throws Exception {
+    public void testGetMedallionsByLastName() throws Exception {
 
-        mockMvc.perform(get("/medallion")).andExpect(status().isOk());
+        mockMvc.perform(get("/medallionservice/v1/medallions?lastName=LastName")).andExpect(status().isOk()).andExpect(jsonPath("$[0].firstName", is("FirstName")));
+
     }
 
     @Test
-    public void testGetMedallion() throws Exception {
+    public void testGetMedallionsByFirstAndLastName() throws Exception {
+        mockMvc.perform(get("/medallionservice/v1/medallions?firstName=FirstName&lastName=LastName")).andExpect(status().isOk());
+    }
 
-        mockMvc.perform(get("/medallion/TEST123"))
+    @Test
+    public void testGetMedallionByHardwareId() throws Exception {
+
+        mockMvc.perform(get("/medallionservice/v1/medallion/TEST123"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.hardwareId", is("TEST123")));
     }
@@ -103,12 +113,13 @@ public class MedallionControllerTest {
     @Test
     public void testUpdateMedallion() throws Exception {
 
-        this.medallion.setFirstName("Fred");
+        this.medallion.setFirstName("ChangedFirstName");
         String medallionJson = json(this.medallion);
-        mockMvc.perform(post("/medallion")
+        mockMvc.perform(post("/medallionservice/v1/medallion")
                 .contentType(contentType)
                 .content(medallionJson))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName", is("ChangedFirstName")));
     }
 
 

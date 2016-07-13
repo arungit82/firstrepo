@@ -5,15 +5,17 @@ import com.carnival.mm.service.MedallionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by david.c.hoak on 6/22/2016.
  */
 @RestController
-@RequestMapping("/medallion")
+@RequestMapping("/medallionservice")
 public class MedallionController {
 
     @Autowired
@@ -21,35 +23,50 @@ public class MedallionController {
 
     public static final Logger log = LoggerFactory.getLogger(MedallionController.class);
 
+
     /**
-     * Endpoint for accessing all medallions
+     * Endpoint for accessing a single medallion by the given hardwareId
+     *
+     * @param hardwareId
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Medallion> getAllMedallions(){
+    @RequestMapping(value = "/v1/medallion/{hardwareId}", method = RequestMethod.GET)
+    public Medallion getMedallion(@PathVariable String hardwareId) {
 
-        return medallionService.getAllMedallions();
+        return medallionService.findMedallionByHardwareId(hardwareId);
+
     }
 
     /**
      * Endpoint for accessing a single medallion by the given hardwareId
-     * @param hardwareId
+     *
+     * @param firstName
+     * @param lastName
      * @return
      */
-    @RequestMapping(value = "/{hardwareId}", method = RequestMethod.GET)
-    public Medallion getMedallion(@PathVariable String hardwareId){
+    @RequestMapping(value = "/v1/medallions", method = RequestMethod.GET)
+    public List<Medallion> searchMedallionsByName(@RequestParam(value = "firstName", required = false) String firstName,
+                                                  @RequestParam(value = "lastName", required = false) String lastName,
+                                                  @RequestParam(value = "locatorId", required = false) String locatorId) {
 
-        return medallionService.getMedallionByHardwareId(hardwareId);
-
+        List<Medallion> medallions = new ArrayList<>();
+        if(StringUtils.isEmpty(locatorId)){
+            medallions = medallionService.searchMedallionsByName(firstName, lastName);
+        }
+        else{
+            medallions = medallionService.searchMedallionsByLocatorId(locatorId);
+        }
+        return medallions;
     }
 
     /**
      * Endpoint for creating a new medallion instance
+     *
      * @param medallion
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST)
-    public Medallion createMedallion(@RequestBody Medallion medallion){
+    @RequestMapping(value = "/v1/medallion", method = RequestMethod.POST)
+    public Medallion createMedallion(@RequestBody Medallion medallion) {
 
         return medallionService.createMedallion(medallion);
 

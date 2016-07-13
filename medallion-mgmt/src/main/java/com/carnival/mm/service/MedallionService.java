@@ -16,11 +16,26 @@ public interface MedallionService {
     List<Medallion> getAllMedallions();
 
     /**
-     * Retrieves Medallion from datastore based on given hardwareId
+     * Retrieve Medallions from the datastore first and/or last name
+     * @param firstName
+     * @param lastName
+     * @return
+     */
+    List<Medallion> searchMedallionsByName(String firstName, String lastName);
+
+    /**
+     * Retrieve Medallions from the datastore by the locatorId on the reservation
+     * @param locatorId
+     * @return
+     */
+    List<Medallion> searchMedallionsByLocatorId(String locatorId);
+
+    /**
+     * Find Medallion from the datastore by hardwareId
      * @param hardwareId
      * @return
      */
-    Medallion getMedallionByHardwareId(String hardwareId);
+    Medallion findMedallionByHardwareId(String hardwareId);
 
     /**
      * Creates a new instance of the Medallion in the datastore
