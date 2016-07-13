@@ -2,6 +2,7 @@ package com.carnival.mm.service.impl;
 
 import com.carnival.mm.domain.Medallion;
 import com.carnival.mm.repository.MedallionRepository;
+import com.carnival.mm.service.MedallionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 public class MedallionServiceTest {
 
     @InjectMocks
-    MedallionServiceImpl medallionService;
+    MedallionService medallionService;
 
     @Mock
     MedallionRepository medallionRepository;
