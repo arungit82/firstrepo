@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by david.c.hoak on 6/27/2016.
@@ -48,20 +49,27 @@ public class MedallionServiceTest {
 
     @Test
     public void testServiceConfiguration() {
-        assertEquals("class com.carnival.mm.service.impl.MedallionServiceImpl", this.medallionService.getClass().toString());
+        assertEquals("class com.carnival.mm.service.MedallionService", this.medallionService.getClass().toString());
     }
 
     @Test
     public void testGetAllMedallion(){
-        Mockito.when(medallionRepository.retrieveAll()).thenReturn(this.allMedallions);
+        when(medallionRepository.retrieveAll()).thenReturn(this.allMedallions);
         assertEquals(this.allMedallions.size(), medallionService.getAllMedallions().size());
     }
 
     @Test
     public void testCreateMedallion(){
         Medallion medallion = allMedallions.get(0);
-        Mockito.when(medallionRepository.save(medallion)).thenReturn(medallion);
+        when(medallionRepository.save(medallion)).thenReturn(medallion);
         assertEquals(medallion, medallionService.createMedallion(medallion));
+    }
+
+    @Test
+    public void testFindMedallionByName(){
+        when(medallionRepository.findByName(any())).thenReturn(this.allMedallions);
+        List<Medallion> medallions = medallionService.searchMedallionsByName("FirstName", "LastName");
+        assertEquals(this.allMedallions, medallions);
     }
 
 

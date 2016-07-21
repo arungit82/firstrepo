@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,19 +41,20 @@ public class MedallionController {
      *
      * @param firstName
      * @param lastName
+     * @param reservationId
      * @return
      */
     @RequestMapping(value = "/v1/medallions", method = RequestMethod.GET)
     public List<Medallion> searchMedallionsByName(@RequestParam(value = "firstName", required = false) String firstName,
                                                   @RequestParam(value = "lastName", required = false) String lastName,
-                                                  @RequestParam(value = "locatorId", required = false) String locatorId) {
+                                                  @RequestParam(value = "reservationId", required = false) String reservationId) {
 
-        List<Medallion> medallions = new ArrayList<>();
-        if(StringUtils.isEmpty(locatorId)){
+        List<Medallion> medallions;
+        if(StringUtils.isEmpty(reservationId)){
             medallions = medallionService.searchMedallionsByName(firstName, lastName);
         }
         else{
-            medallions = medallionService.searchMedallionsByLocatorId(locatorId);
+            medallions = medallionService.searchMedallionsByReservationId(reservationId);
         }
         return medallions;
     }

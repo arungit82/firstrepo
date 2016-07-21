@@ -20,10 +20,10 @@ public interface MedallionRepository extends CrudRepository<Medallion, String> {
 
     /**
      * Repository method for corresponding view byLocatorId
-     * @param locatorId
+     * @param reservationId
      * @return
      */
-    List<Medallion> findByLocatorId(Query locatorId);
+    List<Medallion> findByReservationId(Query reservationId);
 
     /**
      * Repository method for corresponding view byName

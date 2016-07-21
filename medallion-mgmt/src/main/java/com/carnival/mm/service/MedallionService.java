@@ -49,15 +49,15 @@ public class MedallionService {
     }
 
     /**
-     * Retrieve Medallions from the datastore by the locatorId on the reservation
+     * Retrieve Medallions from the datastore by the reservationId on the reservation
      *
-     * @param locatorId
+     * @param reservationId
      * @return
      */
-    public List<Medallion> searchMedallionsByLocatorId(String locatorId) {
+    public List<Medallion> searchMedallionsByReservationId(String reservationId) {
         Query query = new Query();
-        query.setKey(locatorId.toLowerCase());
-        return medallionRepository.findByLocatorId(query);
+        query.setKey(reservationId.toLowerCase());
+        return medallionRepository.findByReservationId(query);
     }
 
     /**

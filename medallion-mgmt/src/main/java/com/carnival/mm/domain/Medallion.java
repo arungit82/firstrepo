@@ -43,7 +43,7 @@ public class Medallion {
     @Field
     private String lastName;
     @Field
-    private String locatorId;
+    private String reservationId;
     @Field
     private String sku;
     @Field
@@ -179,12 +179,12 @@ public class Medallion {
         this.lastName = lastName;
     }
 
-    public String getLocatorId() {
-        return locatorId;
+    public String getReservationId() {
+        return reservationId;
     }
 
-    public void setLocatorId(String locatorId) {
-        this.locatorId = locatorId;
+    public void setReservationId(String reservationId) {
+        this.reservationId = reservationId;
     }
 
     public String getSku() {
