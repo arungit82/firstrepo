@@ -1,6 +1,7 @@
 package com.carnival.mm.controller;
 
 import com.carnival.mm.domain.Medallion;
+import com.carnival.mm.exception.MedallionNotFoundException;
 import com.carnival.mm.service.MedallionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -33,7 +35,6 @@ public class MedallionController {
     public Medallion getMedallion(@PathVariable String hardwareId) {
 
         return medallionService.findMedallionByHardwareId(hardwareId);
-
     }
 
     /**
@@ -66,9 +67,9 @@ public class MedallionController {
      * @return
      */
     @RequestMapping(value = "/v1/medallion", method = RequestMethod.POST)
-    public Medallion createMedallion(@RequestBody Medallion medallion) {
+    public Medallion createMedallion(@Valid @RequestBody Medallion medallion) {
 
-        return medallionService.createMedallion(medallion);
+        return medallionService.saveMedallion(medallion);
 
     }
 }

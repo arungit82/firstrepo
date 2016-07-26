@@ -1,15 +1,22 @@
 package com.carnival.mm.service;
 
 import com.carnival.mm.domain.Medallion;
+import com.carnival.mm.exception.MedallionAlreadyExistsException;
+import com.carnival.mm.exception.MedallionNotFoundException;
 import com.carnival.mm.repository.MedallionRepository;
 import com.couchbase.client.protocol.views.ComplexKey;
 import com.couchbase.client.protocol.views.Query;
+import com.couchbase.client.protocol.views.Stale;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by david.c.hoak on 6/22/2016.
@@ -19,6 +26,11 @@ public class MedallionService {
 
     @Autowired
     private MedallionRepository medallionRepository;
+
+    @Autowired
+    private MedallionAssignmentProducerService producer;
+
+    private static Logger log = LoggerFactory.getLogger(MedallionService.class);
 
     /**
      * Retrieves all Medallions from datastore
@@ -45,7 +57,10 @@ public class MedallionService {
             query.setKey(ComplexKey.of(firstName.toLowerCase(), lastName.toLowerCase()));
         }
 
-        return medallionRepository.findByName(query);
+        List<Medallion> medallions = medallionRepository.findByName(query);
+        if(medallions.isEmpty()){throw new MedallionNotFoundException(firstName + " " + lastName);}
+
+        return medallions;
     }
 
     /**
@@ -57,7 +72,11 @@ public class MedallionService {
     public List<Medallion> searchMedallionsByReservationId(String reservationId) {
         Query query = new Query();
         query.setKey(reservationId.toLowerCase());
-        return medallionRepository.findByReservationId(query);
+
+        List<Medallion> medallions = medallionRepository.findByReservationId(query);
+        if(medallions.isEmpty()){throw new MedallionNotFoundException(reservationId);}
+
+        return medallions;
     }
 
     /**
@@ -69,7 +88,13 @@ public class MedallionService {
     public Medallion findMedallionByHardwareId(String hardwareId) {
         Query query = new Query();
         query.setKey(hardwareId);
-        return medallionRepository.findByHardwareId(query);
+        query.setStale(Stale.FALSE);
+
+        Medallion medallion = medallionRepository.findByHardwareId(query);
+        if(medallion == null){throw new MedallionNotFoundException(hardwareId);}
+
+        producer.sayHello(hardwareId);
+        return medallion;
     }
 
     /**
@@ -78,7 +103,34 @@ public class MedallionService {
      * @param medallion
      * @return
      */
-    public Medallion createMedallion(Medallion medallion) {
+    public Medallion saveMedallion(Medallion medallion) {
+
+        //Check if the id exists, indicating this is an update
+        if(medallion.getId() != null && !medallion.getId().isEmpty()){
+            if(!medallionRepository.exists(medallion.getId())){
+                //throw exception
+                throw new MedallionNotFoundException(medallion.getId());
+            }
+        }
+        else{
+            medallion.setId(UUID.randomUUID().toString());
+            medallion.setCreated(new Date());
+        }
+
+        //Cannot save a medallion with a hardwareId that already exists
+        try {
+            Medallion existingMedallion = findMedallionByHardwareId(medallion.getHardwareId());
+            if(existingMedallion != null){
+                //throw exception
+                throw new MedallionAlreadyExistsException(medallion.getHardwareId());
+            }
+        }
+        catch(MedallionNotFoundException e){
+
+            log.info("Medallion hardwareId not found... Inserting new medallion.");
+        }
+
+        medallion.setUpdated(new Date());
         return medallionRepository.save(medallion);
     }
 }

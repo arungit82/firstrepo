@@ -1,9 +1,11 @@
 package com.carnival.mm.domain;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.mapping.Document;
 import org.springframework.data.couchbase.core.mapping.Field;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -14,7 +16,7 @@ public class Medallion {
 
     @Id
     private String id;
-    @Field
+    @Field @NotNull @NotEmpty
     private String hardwareId;
     @Field
     private String bleId;
