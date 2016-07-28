@@ -62,7 +62,7 @@ public class MedallionServiceTest {
     public void testCreateMedallion(){
         Medallion medallion = allMedallions.get(0);
         when(medallionRepository.save(medallion)).thenReturn(medallion);
-        assertEquals(medallion, medallionService.saveMedallion(medallion));
+        assertEquals(medallion, medallionService.createMedallion(medallion));
     }
 
     @Test

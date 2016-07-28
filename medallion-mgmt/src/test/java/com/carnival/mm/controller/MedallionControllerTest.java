@@ -93,7 +93,7 @@ public class MedallionControllerTest {
     public void testCreateMedallion() throws Exception {
 
         String medallionJson = json(this.medallion);
-        when(medallionService.saveMedallion(any(Medallion.class))).thenReturn(this.medallion);
+        when(medallionService.createMedallion(any(Medallion.class))).thenReturn(this.medallion);
 
         mockMvc.perform(post("/medallionservice/v1/medallion")
                 .contentType(contentType)
@@ -146,7 +146,7 @@ public class MedallionControllerTest {
     @Test
     public void testUpdateMedallion() throws Exception {
 
-        when(medallionService.saveMedallion(any())).thenReturn(this.medallion);
+        when(medallionService.createMedallion(any())).thenReturn(this.medallion);
 
         this.medallion.setFirstName("ChangedFirstName");
         String medallionJson = json(this.medallion);

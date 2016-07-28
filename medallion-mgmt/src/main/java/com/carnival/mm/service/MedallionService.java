@@ -2,6 +2,7 @@ package com.carnival.mm.service;
 
 import com.carnival.mm.domain.Medallion;
 import com.carnival.mm.exception.MedallionAlreadyExistsException;
+import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
 import com.carnival.mm.repository.MedallionRepository;
 import com.couchbase.client.protocol.views.ComplexKey;
@@ -10,6 +11,7 @@ import com.couchbase.client.protocol.views.Stale;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -28,7 +30,7 @@ public class MedallionService {
     private MedallionRepository medallionRepository;
 
     @Autowired
-    private MedallionAssignmentProducerService producer;
+    private MedallionAssignmentTaskService producer;
 
     private static Logger log = LoggerFactory.getLogger(MedallionService.class);
 
@@ -97,24 +99,30 @@ public class MedallionService {
         return medallion;
     }
 
+    public Medallion updateMedallion(Medallion updatedMedallion){
+
+        if(!medallionRepository.exists(updatedMedallion.getId())){
+            //throw exception
+            throw new MedallionNotFoundException(updatedMedallion.getId());
+        }
+        Medallion medallion = findMedallionByHardwareId(updatedMedallion.getHardwareId());
+        BeanUtils.copyProperties(updatedMedallion, medallion);
+        updatedMedallion.setUpdated(new Date());
+        return medallionRepository.save(updatedMedallion);
+    }
+
     /**
      * Creates a new instance of the Medallion in the datastore
      *
      * @param medallion
      * @return
      */
-    public Medallion saveMedallion(Medallion medallion) {
+    public Medallion createMedallion(Medallion medallion) {
 
-        //Check if the id exists, indicating this is an update
+        //Check if the id exists, indicating that an update is being attempted
         if(medallion.getId() != null && !medallion.getId().isEmpty()){
-            if(!medallionRepository.exists(medallion.getId())){
                 //throw exception
-                throw new MedallionNotFoundException(medallion.getId());
-            }
-        }
-        else{
-            medallion.setId(UUID.randomUUID().toString());
-            medallion.setCreated(new Date());
+                throw new MedallionCannotUpdateException(medallion.getId());
         }
 
         //Cannot save a medallion with a hardwareId that already exists
@@ -129,8 +137,10 @@ public class MedallionService {
 
             log.info("Medallion hardwareId not found... Inserting new medallion.");
         }
-
+        medallion.setId(UUID.randomUUID().toString());
+        medallion.setCreated(new Date());
         medallion.setUpdated(new Date());
+
         return medallionRepository.save(medallion);
     }
 }

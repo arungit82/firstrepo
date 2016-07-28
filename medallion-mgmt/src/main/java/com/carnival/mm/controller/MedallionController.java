@@ -1,7 +1,7 @@
 package com.carnival.mm.controller;
 
 import com.carnival.mm.domain.Medallion;
-import com.carnival.mm.exception.MedallionNotFoundException;
+import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.service.MedallionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,21 @@ public class MedallionController {
     }
 
     /**
+     * Endpoint for updating a single medallion by the given hardwareId
+     *
+     * @param hardwareId
+     * @return
+     */
+    @RequestMapping(value = "/v1/medallion/{hardwareId}", method = RequestMethod.POST)
+    public Medallion updateMedallion(@PathVariable String hardwareId, @Valid @RequestBody Medallion medallion) {
+
+        if(!medallion.getHardwareId().equals(hardwareId)){
+            throw new MedallionCannotUpdateException(hardwareId);
+        }
+        return medallionService.updateMedallion(medallion);
+    }
+
+    /**
      * Endpoint for accessing a single medallion by the given hardwareId
      *
      * @param firstName
@@ -69,7 +84,7 @@ public class MedallionController {
     @RequestMapping(value = "/v1/medallion", method = RequestMethod.POST)
     public Medallion createMedallion(@Valid @RequestBody Medallion medallion) {
 
-        return medallionService.saveMedallion(medallion);
+        return medallionService.createMedallion(medallion);
 
     }
 }
