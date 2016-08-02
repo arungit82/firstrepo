@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
  * This Spring Boot Application class serves as the entry point for bringing up the application
  */
 @SpringBootApplication
-@EnableBinding(MedallionChannels.class)
+//@EnableBinding(MedallionChannels.class)
 @Import(DatabaseConfig.class)
 public class Application extends SpringBootServletInitializer {
 

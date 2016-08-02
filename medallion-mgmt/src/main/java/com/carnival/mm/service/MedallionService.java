@@ -1,6 +1,7 @@
 package com.carnival.mm.service;
 
 import com.carnival.mm.domain.Medallion;
+import com.carnival.mm.domain.MedallionStatus;
 import com.carnival.mm.exception.MedallionAlreadyExistsException;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
@@ -13,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
@@ -23,14 +24,14 @@ import java.util.UUID;
 /**
  * Created by david.c.hoak on 6/22/2016.
  */
-@Component("medallionService")
+@Service("medallionService")
 public class MedallionService {
 
     @Autowired
     private MedallionRepository medallionRepository;
 
-    @Autowired
-    private MedallionAssignmentTaskService producer;
+//    @Autowired
+//    private MedallionAssignmentTaskService producer;
 
     private static Logger log = LoggerFactory.getLogger(MedallionService.class);
 
@@ -92,11 +93,7 @@ public class MedallionService {
         query.setKey(hardwareId);
         query.setStale(Stale.FALSE);
 
-        Medallion medallion = medallionRepository.findByHardwareId(query);
-        if(medallion == null){throw new MedallionNotFoundException(hardwareId);}
-
-        producer.sayHello(hardwareId);
-        return medallion;
+        return medallionRepository.findByHardwareId(query);
     }
 
     public Medallion updateMedallion(Medallion updatedMedallion){
@@ -126,21 +123,25 @@ public class MedallionService {
         }
 
         //Cannot save a medallion with a hardwareId that already exists
-        try {
-            Medallion existingMedallion = findMedallionByHardwareId(medallion.getHardwareId());
-            if(existingMedallion != null){
-                //throw exception
-                throw new MedallionAlreadyExistsException(medallion.getHardwareId());
-            }
+        Medallion existingMedallion = findMedallionByHardwareId(medallion.getHardwareId());
+        if(existingMedallion != null){
+            //throw exception
+            throw new MedallionAlreadyExistsException(medallion.getHardwareId());
         }
-        catch(MedallionNotFoundException e){
 
-            log.info("Medallion hardwareId not found... Inserting new medallion.");
-        }
         medallion.setId(UUID.randomUUID().toString());
         medallion.setCreated(new Date());
         medallion.setUpdated(new Date());
 
         return medallionRepository.save(medallion);
+    }
+
+    public int getAvailableMedallionCount(){
+
+        Query query = new Query();
+        query.setKey(MedallionStatus.UNASSIGNED.toString());
+        query.setStale(Stale.FALSE);
+
+        return medallionRepository.findByStatus(query).size();
     }
 }

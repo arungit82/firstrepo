@@ -2,6 +2,7 @@ package com.carnival.mm.controller;
 
 import com.carnival.mm.domain.Medallion;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
+import com.carnival.mm.exception.MedallionNotFoundException;
 import com.carnival.mm.service.MedallionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,11 @@ public class MedallionController {
     @RequestMapping(value = "/v1/medallion/{hardwareId}", method = RequestMethod.GET)
     public Medallion getMedallion(@PathVariable String hardwareId) {
 
-        return medallionService.findMedallionByHardwareId(hardwareId);
+        Medallion medallion = medallionService.findMedallionByHardwareId(hardwareId);
+        if (medallion == null) {
+            throw new MedallionNotFoundException(hardwareId);
+        }
+        return medallion;
     }
 
     /**
@@ -46,7 +51,7 @@ public class MedallionController {
     @RequestMapping(value = "/v1/medallion/{hardwareId}", method = RequestMethod.POST)
     public Medallion updateMedallion(@PathVariable String hardwareId, @Valid @RequestBody Medallion medallion) {
 
-        if(!medallion.getHardwareId().equals(hardwareId)){
+        if (!medallion.getHardwareId().equals(hardwareId)) {
             throw new MedallionCannotUpdateException(hardwareId);
         }
         return medallionService.updateMedallion(medallion);
@@ -66,10 +71,9 @@ public class MedallionController {
                                                   @RequestParam(value = "reservationId", required = false) String reservationId) {
 
         List<Medallion> medallions;
-        if(StringUtils.isEmpty(reservationId)){
+        if (StringUtils.isEmpty(reservationId)) {
             medallions = medallionService.searchMedallionsByName(firstName, lastName);
-        }
-        else{
+        } else {
             medallions = medallionService.searchMedallionsByReservationId(reservationId);
         }
         return medallions;

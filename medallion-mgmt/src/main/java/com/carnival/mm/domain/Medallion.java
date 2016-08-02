@@ -18,22 +18,22 @@ public class Medallion {
     private String id;
     @Field @NotNull @NotEmpty
     private String hardwareId;
-    @Field
+    @Field @NotNull @NotEmpty
     private String bleId;
-    @Field
+    @Field @NotNull @NotEmpty
     private String majorId;
-    @Field
+    @Field @NotNull @NotEmpty
     private String minorId;
-    @Field
+    @Field @NotNull @NotEmpty
     private String nfcId;
-    @Field
+    @Field @NotNull @NotEmpty
     private String uuId;
     @Field
     private String rssId;
     @Field
     private String batteryVolatageLevel;
-    @Field
-    private String state;
+    @Field @NotNull @NotEmpty
+    private String status;
 
     @Field
     private String caseId;
@@ -141,12 +141,12 @@ public class Medallion {
         this.batteryVolatageLevel = batteryVolatageLevel;
     }
 
-    public String getState() {
-        return state;
+    public String getStatus() {
+        return status;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getCaseId() {

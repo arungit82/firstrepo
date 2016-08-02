@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Experience Slice: Release 9</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+        $( document ).ready(function() {
+            $("#lookupBtn").click(function(){
+                if($("#lkp_hardwareId").val()!=""){
+                    $.getJSON( "http://localhost:8080/medallionservice/v1/medallion/" + $("#lkp_hardwareId").val(), function( data ) {
+                        var jsonData = JSON.stringify(data, undefined, '\t');
+                        $("#medallionJSON").html(jsonData);
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown){$("#medallionJSON").html("Medallion Not Found.");});
+                }
+            });
+
+            $("#assignBtn").click(function(){
+                alert("Assign!");
+            });
+
+            $("#resetBtn").click(function(){
+                alert("Reset!");
+            });
+        });
+    </script>
+</head>
+<body style="width:70%; margin:auto; font-family:Arial;">
+<h2>Release 9 Experience Slice: Assign a Medallion to Guest</h2>
+
+    <div style="float:left; width:45%; border-right:solid lightgrey 1px; padding: 25px 0px 350px;">
+        <h3 style="text-align:center;">Assign Medallion</h3>
+        <div style="text-align:center;">
+            <div style="padding:3px 0px;">
+                <input type="text" id="hardwareId" placeholder="Medallion Hardware ID" />
+            </div>
+            <div style="padding:3px 0px;">
+                <input type="text" id="uiid" placeholder="Guest UIID" />
+            </div>
+            <div style="padding:3px 0px;">
+                <input type="text" id="firstName" placeholder="First Name" />
+            </div>
+            <div style="padding:3px 0px;">
+                <input type="text" id="lastName" placeholder="Last Name" />
+            </div>
+            <div style="padding:3px 0px;">
+                <button id="resetBtn" style="margin-right:60px;">Reset</button>
+
+                <button id="assignBtn">Assign</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="float:left; width:54%; padding: 25px 0px 35px;">
+        <h3 style="text-align:center;">Medallion Lookup</h3>
+        <div style="text-align:center;">
+            <div style="padding:3px 0px;">
+                <input type="text" id="lkp_hardwareId" placeholder="Medallion Hardware ID" /> <button id="lookupBtn">Lookup</button>
+            </div>
+        </div>
+        <pre id="medallionJSON" style="background:#fafafa; font-size:12px; font-family:courier; border:solid grey 1px; width:90%; min-height:250px; padding:10px; margin:auto; margin-top:25px;"></pre>
+    </div>
+    <div style="clear:both;"></div>
+    <div style="border-top: solid lightgrey 1px;">
+        <h3 style="text-align:center;">Inventory</h3>
+        <div style="text-align:center; font-size:18px; border:solid grey 1px; width:200px; height:200px; padding:10px; margin:auto; margin-top:25px;">
+            <div style="font-size:125px; margin-bottom:15px;" th:text="${inventory}"></div>
+            <div>Available Medallions</div>
+        </div>
+    </div>
+
+</body>
+</html>

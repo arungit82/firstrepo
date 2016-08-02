@@ -37,4 +37,10 @@ public interface MedallionRepository extends CrudRepository<Medallion, String> {
      * @return
      */
     List<Medallion> retrieveAll();
+
+    /**
+     * Repository method for corresponding view byStatus
+     * @return
+     */
+    List<Medallion> findByStatus(Query status);
 }
