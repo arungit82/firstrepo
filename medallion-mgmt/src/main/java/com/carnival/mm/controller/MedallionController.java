@@ -66,7 +66,7 @@ public class MedallionController {
      * @return
      */
     @RequestMapping(value = "/v1/medallions", method = RequestMethod.GET)
-    public List<Medallion> searchMedallionsByName(@RequestParam(value = "firstName", required = false) String firstName,
+    public List<Medallion> searchMedallions(@RequestParam(value = "firstName", required = false) String firstName,
                                                   @RequestParam(value = "lastName", required = false) String lastName,
                                                   @RequestParam(value = "reservationId", required = false) String reservationId) {
 

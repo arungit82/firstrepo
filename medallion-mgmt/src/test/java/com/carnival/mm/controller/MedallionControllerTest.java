@@ -83,6 +83,12 @@ public class MedallionControllerTest {
         this.medallion = new Medallion();
         this.medallion.setId("123");
         this.medallion.setHardwareId("TEST123");
+        this.medallion.setBleId("testBle");
+        this.medallion.setMajorId("testMajor");
+        this.medallion.setMinorId("testMinor");
+        this.medallion.setNfcId("testNfc");
+        this.medallion.setUuId("testUuid");
+        this.medallion.setStatus("ASSIGNED");
         this.medallion.setFirstName("FirstName");
         this.medallion.setLastName("LastName");
 
@@ -146,11 +152,11 @@ public class MedallionControllerTest {
     @Test
     public void testUpdateMedallion() throws Exception {
 
-        when(medallionService.createMedallion(any())).thenReturn(this.medallion);
+        when(medallionService.updateMedallion(any())).thenReturn(this.medallion);
 
         this.medallion.setFirstName("ChangedFirstName");
         String medallionJson = json(this.medallion);
-        mockMvc.perform(post("/medallionservice/v1/medallion")
+        mockMvc.perform(post("/medallionservice/v1/medallion/TEST123")
                 .contentType(contentType)
                 .content(medallionJson))
                 .andExpect(status().isOk())

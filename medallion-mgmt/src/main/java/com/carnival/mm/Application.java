@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
  */
 @SpringBootApplication
 //@EnableBinding(MedallionChannels.class)
-@Import(DatabaseConfig.class)
+@Import({DatabaseConfig.class, SwaggerConfig.class})
 public class Application extends SpringBootServletInitializer {
 
     @Override

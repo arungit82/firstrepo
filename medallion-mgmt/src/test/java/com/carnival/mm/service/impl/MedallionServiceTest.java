@@ -61,7 +61,9 @@ public class MedallionServiceTest {
     @Test
     public void testCreateMedallion(){
         Medallion medallion = allMedallions.get(0);
+        medallion.setId(null);
         when(medallionRepository.save(medallion)).thenReturn(medallion);
+        when(medallionRepository.exists(medallion.getId())).thenReturn(false);
         assertEquals(medallion, medallionService.createMedallion(medallion));
     }
 
