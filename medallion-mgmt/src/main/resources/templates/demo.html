@@ -5,10 +5,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script>
+    // <![CDATA[
         $( document ).ready(function() {
             $("#lookupBtn").click(function(){
                 if($("#lkp_hardwareId").val()!=""){
-                    $.getJSON( "http://localhost:8080/medallionservice/v1/medallion/" + $("#lkp_hardwareId").val(), function( data ) {
+                    $.getJSON( "/medallionservice/v1/medallion/" + $("#lkp_hardwareId").val(), function( data ) {
                         var jsonData = JSON.stringify(data, undefined, '\t');
                         $("#medallionJSON").html(jsonData);
                     })
@@ -17,13 +18,54 @@
             });
 
             $("#assignBtn").click(function(){
-                alert("Assign!");
+                var assignment = {
+                    hardwareId: $("#hardwareId").val(),
+                    uiid: $("#uiid").val(),
+                    firstName: $("#firstName").val(),
+                    lastName: $("#lastName").val()
+                };
+                if(assignment.hardwareId!="" && assignment.uiid!="" && assignment.firstName!="" && assignment.lastName!=""){
+
+                    $.ajax({
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        type: "POST",
+                        url: "/medallionservice/v1/medallion-assignment",
+                        data: JSON.stringify(assignment),
+                        success: assignedSuccess,
+                        error: assignedError,
+                        dataType: "json"
+                    });
+                }
             });
+
+            function assignedError(jqXHR, textStatus, errorThrown){
+                $("#assignmentStatus").html(errorThrown);
+                $("#assignmentStatus").css("color", "red");
+            }
+
+            function assignedSuccess(data){
+                $("#assignmentStatus").html("Medallion Assignment Successful");
+                $("#assignmentStatus").css("color", "green");
+                var jsonData = JSON.stringify(data, undefined, '\t');
+                $("#medallionJSON").html(jsonData);
+
+                $.get("/medallionservice/v1/medallion-count", function(data){
+                    $("#medallionCount").html(data);
+                });
+            }
+
+
+
+
 
             $("#resetBtn").click(function(){
                 alert("Reset!");
             });
         });
+    // ]]>
     </script>
 </head>
 <body style="width:70%; margin:auto; font-family:Arial;">
@@ -49,6 +91,7 @@
 
                 <button id="assignBtn">Assign</button>
             </div>
+            <div id="assignmentStatus"></div>
         </div>
     </div>
 
@@ -65,7 +108,7 @@
     <div style="border-top: solid lightgrey 1px;">
         <h3 style="text-align:center;">Inventory</h3>
         <div style="text-align:center; font-size:18px; border:solid grey 1px; width:200px; height:200px; padding:10px; margin:auto; margin-top:25px;">
-            <div style="font-size:125px; margin-bottom:15px;" th:text="${inventory}"></div>
+            <div id="medallionCount" style="font-size:125px; margin-bottom:15px;" th:text="${inventory}"></div>
             <div>Available Medallions</div>
         </div>
     </div>

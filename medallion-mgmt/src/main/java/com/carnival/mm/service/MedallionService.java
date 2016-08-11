@@ -1,6 +1,7 @@
 package com.carnival.mm.service;
 
 import com.carnival.mm.domain.Medallion;
+import com.carnival.mm.domain.MedallionAssignment;
 import com.carnival.mm.domain.MedallionStatus;
 import com.carnival.mm.exception.MedallionAlreadyExistsException;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
@@ -136,6 +137,11 @@ public class MedallionService {
         return medallionRepository.save(medallion);
     }
 
+
+    /**
+     * Returns the count of medallions in a UNASSIGNED status
+     * @return
+     */
     public int getAvailableMedallionCount(){
 
         Query query = new Query();

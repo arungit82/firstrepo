@@ -1,8 +1,10 @@
 package com.carnival.mm.controller;
 
 import com.carnival.mm.domain.Medallion;
+import com.carnival.mm.domain.MedallionAssignment;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
+import com.carnival.mm.service.MedallionAssignmentTaskService;
 import com.carnival.mm.service.MedallionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,9 @@ public class MedallionController {
 
     @Autowired
     MedallionService medallionService;
+
+    @Autowired
+    MedallionAssignmentTaskService medallionAssignmentTaskService;
 
     public static final Logger log = LoggerFactory.getLogger(MedallionController.class);
 
@@ -91,5 +96,28 @@ public class MedallionController {
         return medallionService.createMedallion(medallion);
 
     }
+
+    /**
+     * Endpoint for assigning a medallion to an individual
+     * @param medallionAssignment
+     * @return
+     */
+    @RequestMapping(value="/v1/medallion-assignment", method=RequestMethod.POST)
+    public Medallion assignMedallion(@Valid @RequestBody MedallionAssignment medallionAssignment){
+
+        Medallion medallion = medallionAssignmentTaskService.assignMedallionToIndividual(medallionAssignment);
+        return medallion;
+    }
+
+    /**
+     * Endpoint for getting the count of unassigned medallions.  This is a throw away method only to be used for
+     * purposes of the release 9 experience slice demo.
+     * @return
+     */
+    @RequestMapping(value="/v1/medallion-count", method=RequestMethod.GET)
+    public int medallionUnassignedCount(){
+        return medallionService.getAvailableMedallionCount();
+    }
+
 }
 
