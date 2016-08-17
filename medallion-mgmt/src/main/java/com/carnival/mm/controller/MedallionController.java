@@ -119,7 +119,5 @@ public class MedallionController {
         return medallionService.getAvailableMedallionCount();
     }
 
-    //Comments from Bala    
-
 }
 
