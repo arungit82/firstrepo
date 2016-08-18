@@ -53,6 +53,11 @@ public class Medallion {
     @Field
     private String ringColor;
 
+
+
+
+
+
     @Field
     private Date created;
     @Field
@@ -61,6 +66,8 @@ public class Medallion {
     private String __type = "medallion";
     @Field
     private String __version = "1.0";
+
+
 
     /**
      * Default Constructor

@@ -5,6 +5,7 @@ import com.carnival.mm.domain.MedallionAssignment;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
 import com.carnival.mm.service.MedallionAssignmentTaskService;
+
 import com.carnival.mm.service.MedallionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ public class MedallionController {
 
     @Autowired
     MedallionAssignmentTaskService medallionAssignmentTaskService;
+
+
 
     public static final Logger log = LoggerFactory.getLogger(MedallionController.class);
 
@@ -110,6 +113,27 @@ public class MedallionController {
     }
 
     /**
+     * Endpoint for getting medallion using Guest ID
+     * @param guestId
+     * @return
+     */
+    @RequestMapping(value="/v1/medallion-GUID/{guestId}", method=RequestMethod.GET)
+   //public Medallion getMedallionGuestID(@Valid @RequestBody Medallion medallion){
+    public Medallion getMedallionGuestID(@PathVariable String guestId){
+
+        String test = guestId;
+        System.out.println("test---------"+test);
+
+        Medallion objMedallion = medallionService.findMedallionByGuestID(guestId);
+        if (objMedallion == null) {
+            throw new MedallionNotFoundException(guestId);
+        }
+        return objMedallion;
+
+    }
+
+
+    /**
      * Endpoint for getting the count of unassigned medallions.  This is a throw away method only to be used for
      * purposes of the release 9 experience slice demo.
      * @return
@@ -118,6 +142,8 @@ public class MedallionController {
     public int medallionUnassignedCount(){
         return medallionService.getAvailableMedallionCount();
     }
+
+
 
 }
 

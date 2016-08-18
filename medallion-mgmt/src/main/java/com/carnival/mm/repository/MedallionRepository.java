@@ -19,6 +19,13 @@ public interface MedallionRepository extends CrudRepository<Medallion, String> {
     Medallion findByHardwareId(Query hardwareId);
 
     /**
+     * Repository method for corresponding view byHardwareId
+     * @param guestId
+     * @return
+     */
+    Medallion findByGuestId(Query guestId);
+
+    /**
      * Repository method for corresponding view byLocatorId
      * @param reservationId
      * @return

@@ -97,6 +97,14 @@ public class MedallionService {
         return medallionRepository.findByHardwareId(query);
     }
 
+    public Medallion findMedallionByGuestID(String guestId) {
+        Query query = new Query();
+        query.setKey(guestId);
+        query.setStale(Stale.FALSE);
+
+        return medallionRepository.findByGuestId(query);
+    }
+
     public Medallion updateMedallion(Medallion updatedMedallion){
 
         if(!medallionRepository.exists(updatedMedallion.getId())){
@@ -136,6 +144,8 @@ public class MedallionService {
 
         return medallionRepository.save(medallion);
     }
+
+
 
 
     /**
