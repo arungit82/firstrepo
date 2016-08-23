@@ -17,6 +17,16 @@
                 }
             });
 
+            $("#lookupGuestBtn").click(function(){
+                if($("#lkp_guestId").val()!=""){
+                    $.getJSON( "/medallionservice/v1/medallion-GUID/" + $("#lkp_guestId").val(), function( data ) {
+                        var jsonData = JSON.stringify(data, undefined, '\t');
+                        $("#medallionGuestJSON").html(jsonData);
+                    })
+                    .fail(function(jqXHR, textStatus, errorThrown){$("#medallionGuestJSON").html("Medallion Not Found.");});
+                }
+            });
+
             $("#assignBtn").click(function(){
                 var assignment = {
                     hardwareId: $("#hardwareId").val(),
@@ -56,10 +66,6 @@
                     $("#medallionCount").html(data);
                 });
             }
-
-
-
-
 
             $("#resetBtn").click(function(){
                 alert("Reset!");
@@ -103,6 +109,16 @@
             </div>
         </div>
         <pre id="medallionJSON" style="background:#fafafa; font-size:12px; font-family:courier; border:solid grey 1px; width:90%; min-height:250px; padding:10px; margin:auto; margin-top:25px;"></pre>
+    </div>
+    <div style="float:left; width:54%; padding: 25px 0px 35px;">
+        <h3 style="text-align:center;">Medallion Lookup by Guest ID</h3>
+            <div style="text-align:center;">
+                <div style="padding:3px 0px;">
+                    <input type="text" id="lkp_guestId" placeholder="Medallion Guest ID" />
+                    <button id="lookupGuestBtn">Lookup</button>
+                </div>
+            </div>
+        <pre id="medallionGuestJSON" style="background:#fafafa; font-size:12px; font-family:courier; border:solid grey 1px; width:90%; min-height:250px; padding:10px; margin:auto; margin-top:25px;"></pre>
     </div>
     <div style="clear:both;"></div>
     <div style="border-top: solid lightgrey 1px;">
