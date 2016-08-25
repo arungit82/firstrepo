@@ -8,22 +8,23 @@
     // <![CDATA[
         $( document ).ready(function() {
             $("#lookupBtn").click(function(){
-                if($("#lkp_hardwareId").val()!=""){
-                    $.getJSON( "/medallionservice/v1/medallion/" + $("#lkp_hardwareId").val(), function( data ) {
-                        var jsonData = JSON.stringify(data, undefined, '\t');
-                        $("#medallionJSON").html(jsonData);
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown){$("#medallionJSON").html("Medallion Not Found.");});
+                if ($("#SearchCriteria").val() == "HardwareId"){
+                    if($("#lkp_Field").val()!=""){
+                        $.getJSON( "/medallionservice/v1/medallion/" + $("#lkp_Field").val(), function( data ) {
+                            var jsonData = JSON.stringify(data, undefined, '\t');
+                            $("#medallionJSON").html(jsonData);
+                        })
+                        .fail(function(jqXHR, textStatus, errorThrown){$("#medallionJSON").html("Medallion Not Found.");});
+                    }
                 }
-            });
-
-            $("#lookupGuestBtn").click(function(){
-                if($("#lkp_guestId").val()!=""){
-                    $.getJSON( "/medallionservice/v1/medallion-GUID/" + $("#lkp_guestId").val(), function( data ) {
-                        var jsonData = JSON.stringify(data, undefined, '\t');
-                        $("#medallionGuestJSON").html(jsonData);
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown){$("#medallionGuestJSON").html("Medallion Not Found.");});
+                else {
+                    if($("#lkp_Field").val()!=""){
+                        $.getJSON( "/medallionservice/v1/medallion-GUID/" + $("#lkp_Field").val(), function( data ) {
+                            var jsonData = JSON.stringify(data, undefined, '\t');
+                            $("#medallionJSON").html(jsonData);
+                        })
+                        .fail(function(jqXHR, textStatus, errorThrown){$("#medallionJSON").html("Medallion Not Found.");});
+                    }
                 }
             });
 
@@ -105,21 +106,17 @@
         <h3 style="text-align:center;">Medallion Lookup</h3>
         <div style="text-align:center;">
             <div style="padding:3px 0px;">
-                <input type="text" id="lkp_hardwareId" placeholder="Medallion Hardware ID" /> <button id="lookupBtn">Lookup</button>
+              <select id = "SearchCriteria">
+                  <option value="HardwareId">Hardware Id</option>
+                  <option value="GuestId">Guest Id</option>
+              </select>
+                <input type="text" id="lkp_Field" placeholder="Search Medallion Field" />
+                <button id="lookupBtn">Lookup</button>
             </div>
         </div>
         <pre id="medallionJSON" style="background:#fafafa; font-size:12px; font-family:courier; border:solid grey 1px; width:90%; min-height:250px; padding:10px; margin:auto; margin-top:25px;"></pre>
     </div>
-    <div style="float:left; width:54%; padding: 25px 0px 35px;">
-        <h3 style="text-align:center;">Medallion Lookup by Guest ID</h3>
-            <div style="text-align:center;">
-                <div style="padding:3px 0px;">
-                    <input type="text" id="lkp_guestId" placeholder="Medallion Guest ID" />
-                    <button id="lookupGuestBtn">Lookup</button>
-                </div>
-            </div>
-        <pre id="medallionGuestJSON" style="background:#fafafa; font-size:12px; font-family:courier; border:solid grey 1px; width:90%; min-height:250px; padding:10px; margin:auto; margin-top:25px;"></pre>
-    </div>
+
     <div style="clear:both;"></div>
     <div style="border-top: solid lightgrey 1px;">
         <h3 style="text-align:center;">Inventory</h3>
