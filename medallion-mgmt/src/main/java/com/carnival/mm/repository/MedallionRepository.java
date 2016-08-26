@@ -1,6 +1,7 @@
 package com.carnival.mm.repository;
 
 import com.carnival.mm.domain.Medallion;
+import com.carnival.mm.domain.MedallionTE2;
 import com.couchbase.client.protocol.views.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -20,6 +21,13 @@ public interface MedallionRepository extends CrudRepository<Medallion, String> {
 
     /**
      * Repository method for corresponding view byHardwareId
+     * @param hardwareId
+     * @return
+     */
+    MedallionTE2 findByHardwareIdTE2(Query hardwareId);
+
+    /**
+     * Repository method for corresponding view byGuestId
      * @param guestId
      * @return
      */

@@ -1,8 +1,8 @@
 package com.carnival.mm.service;
 
 import com.carnival.mm.domain.Medallion;
-import com.carnival.mm.domain.MedallionAssignment;
 import com.carnival.mm.domain.MedallionStatus;
+import com.carnival.mm.domain.MedallionTE2;
 import com.carnival.mm.exception.MedallionAlreadyExistsException;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
@@ -30,9 +30,6 @@ public class MedallionService {
 
     @Autowired
     private MedallionRepository medallionRepository;
-
-//    @Autowired
-//    private MedallionAssignmentTaskService producer;
 
     private static Logger log = LoggerFactory.getLogger(MedallionService.class);
 
@@ -97,9 +94,32 @@ public class MedallionService {
         return medallionRepository.findByHardwareId(query);
     }
 
-    public Medallion findMedallionByGuestID(String guestId) {
+    /**
+     * Find Medallion from the datastore by hardwareId
+     *
+     * @param hardwareId
+     * @return
+     */
+    public MedallionTE2 findMedallionByHardwareIdTE2(String hardwareId) {
         Query query = new Query();
-        query.setKey(guestId);
+        query.setKey(hardwareId);
+        query.setStale(Stale.FALSE);
+
+        return medallionRepository.findByHardwareIdTE2(query);
+    }
+
+    /**
+     * Find Medallion from the datastore by guestId
+     *
+     * @param guestId
+     * @return
+     */
+    public Medallion findMedallionByGuestID(String guestId) {
+
+        String strGuestId = "\"" +guestId+ "\"";
+
+        Query query = new Query();
+        query.setKey(strGuestId);
         query.setStale(Stale.FALSE);
 
         return medallionRepository.findByGuestId(query);

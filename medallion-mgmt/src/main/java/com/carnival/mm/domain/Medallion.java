@@ -38,7 +38,7 @@ public class Medallion {
     @Field
     private String caseId;
 
-    @Field
+    @Field @NotNull @NotEmpty
     private String guestId;
     @Field
     private String firstName;
@@ -52,11 +52,6 @@ public class Medallion {
     private String capColor;
     @Field
     private String ringColor;
-
-
-
-
-
 
     @Field
     private Date created;
