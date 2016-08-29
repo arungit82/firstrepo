@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Experience Slice: Release 9</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script>
+    // <![CDATA[
+        $( document ).ready(function() {
+            $("#publish").click(function(){
+                if ($("#xiConnect_URL").val() == "xiConnectAPI"){
+                    if($("#xiConnectAPI").val()!=""){
+                        $.getJSON( "qa-trident.te2.biz/,...." + $("#lkp_Field").val(), function( data ) {
+                            var jsonData = JSON.stringify(data, undefined, '\t');
+                            $("#medallionJSON").html(jsonData);
+                        })
+                        .fail(function(jqXHR, textStatus, errorThrown){$("#medallionJSON").html("Medallion Not Found.");});
+                    }
+                }
+            });
+
+            $("#callback_event").click(function(){
+                var assignment = {
+                    callback_json_data: $("#medallionTE2JSON_Callback").val(),
+                };
+                if(assignment.callback_json_data!=""){
+
+                    $.ajax({
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        type: "POST",
+                        url: "/medallionservice/v1/medallion-callback",
+                        data: JSON.stringify(callback_json_data),
+                        success: assignedSuccess,
+                        error: assignedError,
+                        dataType: "json"
+                    });
+                }
+            });
+
+            function assignedError(jqXHR, textStatus, errorThrown){
+                $("#assignmentStatus").html(errorThrown);
+                $("#assignmentStatus").css("color", "red");
+            }
+
+
+        });
+    // ]]>
+    </script>
+</head>
+<body style="width:70%; margin:auto; font-family:Arial;">
+<h2>Release 9 Experience Slice: Send and Receive Message from xiConnect</h2>
+
+    <div style="float:left; width:54%; padding: 25px 0px 35px;">
+        <h3 style="text-align:center;">Send Message</h3>
+        <div style="text-align:center;">
+            <div style="padding:3px 0px;">
+              <select id = "xiConnect_URL">
+                  <option value="xiConnectAPI">xiConnect API</option>
+              </select>
+                <input type="text" id="URL" placeholder="URL" />
+                <button id="publish">Publish Event</button>
+            </div>
+        </div>
+        <textarea  id="medallionTE2JSON_Publish" rows="16" cols="50" style=" font-size:12px; font-family:courier; border:solid grey 1px; width:90%; min-height:250px; padding:10px; margin:auto; margin-top:25px;">
+    </textarea>
+    </div>
+
+<div style="float:left; width:54%; padding: 25px 0px 35px;">
+    <h3 style="text-align:center;">Callback Message</h3>
+    <div style="text-align:center;">
+        <div style="padding:3px 0px;">
+            <select id = "xiConnect_Callback_URL">
+                <option value="URL">xiConnect Callback API</option>
+            </select>
+            <input type="text" id="Callback_URL" placeholder="URL" />
+            <button id="callback_event">Callback Event</button>
+        </div>
+    </div>
+    <textarea  id="medallionTE2JSON_Callback" rows="16" cols="50" style=" font-size:12px; font-family:courier; border:solid grey 1px; width:90%; min-height:250px; padding:10px; margin:auto; margin-top:25px;">
+    </textarea>
+</div>
+
+
+</body>
+</html>

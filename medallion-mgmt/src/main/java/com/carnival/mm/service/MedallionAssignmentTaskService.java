@@ -12,6 +12,8 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * Created by david on 7/26/16.
  */
@@ -65,6 +67,9 @@ public class MedallionAssignmentTaskService {
         medallion.setFirstName(assignment.getFirstName());
         medallion.setLastName(assignment.getLastName());
         medallion.setStatus(MedallionStatus.ASSIGNED.toString());
+
+        //US 148
+        medallion.setUpdated(new Date());
 
         Medallion updatedMedallion = medallionService.updateMedallion(medallion);
 

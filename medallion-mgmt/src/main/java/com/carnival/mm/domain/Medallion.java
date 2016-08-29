@@ -31,7 +31,7 @@ public class Medallion {
     @Field
     private String rssId;
     @Field
-    private String batteryVolatageLevel;
+    private String batteryVoltageLevel;
     @Field @NotNull @NotEmpty
     private String status;
 
@@ -135,12 +135,12 @@ public class Medallion {
         this.rssId = rssId;
     }
 
-    public String getBatteryVolatageLevel() {
-        return batteryVolatageLevel;
+    public String getBatteryVoltageLevel() {
+        return batteryVoltageLevel;
     }
 
-    public void setBatteryVolatageLevel(String batteryVolatageLevel) {
-        this.batteryVolatageLevel = batteryVolatageLevel;
+    public void setBatteryVoltageLevel(String batteryVoltageLevel) {
+        this.batteryVoltageLevel = batteryVoltageLevel;
     }
 
     public String getStatus() {

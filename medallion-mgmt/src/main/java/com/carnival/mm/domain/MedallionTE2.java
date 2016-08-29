@@ -19,13 +19,11 @@ public class MedallionTE2 {
     @Field @NotNull @NotEmpty
     private String hardwareId;
     @Field @NotNull @NotEmpty
-    private String uiId;
-    @Field @NotNull @NotEmpty
     private String bleId;
     @Field @NotNull @NotEmpty
-    private String majorId;
+    private String major;
     @Field @NotNull @NotEmpty
-    private String minorId;
+    private String minor;
     @Field @NotNull @NotEmpty
     private String uuid;
     @Field @NotNull @NotEmpty
@@ -66,15 +64,7 @@ public class MedallionTE2 {
         this.hardwareId = hardwareId;
     }
 
-    public String getUiId() {
-        return uiId;
-    }
-
-    public void setUiId(String uiId) {
-        this.uiId = uiId;
-    }
-
-    public String getBleId() {
+     public String getBleId() {
         return bleId;
     }
 
@@ -82,20 +72,20 @@ public class MedallionTE2 {
         this.bleId = bleId;
     }
 
-    public String getMajorId() {
-        return majorId;
+    public String getMajor() {
+        return major;
     }
 
-    public void setMajorId(String majorId) {
-        this.majorId = majorId;
+    public void setMajor(String major) {
+        this.major = major;
     }
 
-    public String getMinorId() {
-        return minorId;
+    public String getMinor() {
+        return minor;
     }
 
-    public void setMinorId(String minorId) {
-        this.minorId = minorId;
+    public void setMinor(String minor) {
+        this.minor = minor;
     }
 
     public String getUuid() {
