@@ -20,11 +20,9 @@
             });
 
             $("#callback_event").click(function(){
-                var assignment = {
-                    callback_json_data: $("#medallionTE2JSON_Callback").val(),
-                };
-                if(assignment.callback_json_data!=""){
+              var assignment = $("#medallionTE2JSON_Callback").val();
 
+                if(assignment!=""){
                     $.ajax({
                         headers: {
                             'Accept': 'application/json',
@@ -32,7 +30,7 @@
                         },
                         type: "POST",
                         url: "/medallionservice/v1/medallion-callback",
-                        data: JSON.stringify(callback_json_data),
+                        data: assignment,
                         success: assignedSuccess,
                         error: assignedError,
                         dataType: "json"
@@ -40,10 +38,13 @@
                 }
             });
 
-            function assignedError(jqXHR, textStatus, errorThrown){
-                $("#assignmentStatus").html(errorThrown);
-                $("#assignmentStatus").css("color", "red");
+            function assignedSuccess(data){
+               alert("Success");
             }
+
+            function assignedError(jqXHR, textStatus, errorThrown){
+                alert("Error");
+             }
 
 
         });
