@@ -128,15 +128,15 @@ public class MedallionController {
      * @return
      */
     @RequestMapping(value = "/v1/medallion-callback", method = RequestMethod.POST)
-    public void updateMedallionAssignment(@Valid @RequestBody MedallionTE2 medallionTE2) {
+    public Medallion updateMedallionAssignment(@Valid @RequestBody MedallionTE2 medallionTE2) {
         // To do: Call back assignment
 
         Medallion medallion = getMedallion(medallionTE2.getHardwareId()) ;
         Date date = new Date();
 
-        medallion.setId(medallionTE2.getId());
+        medallion.setGuestId(medallionTE2.getId());
         medallion.setHardwareId(medallionTE2.getHardwareId());
-        medallion.setUuId(medallionTE2.getUuid());
+        medallion.setGuestId(medallionTE2.getUiid());
         medallion.setBleId(medallionTE2.getBleId());
         medallion.setMajorId(medallionTE2.getMajor());
         medallion.setMinorId(medallionTE2.getMinor());
@@ -161,6 +161,8 @@ public class MedallionController {
         }
 
         medallionService.updateMedallion(medallion);
+
+        return medallion;
     }
 
 
