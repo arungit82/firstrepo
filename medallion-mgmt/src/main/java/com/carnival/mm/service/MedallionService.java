@@ -114,7 +114,7 @@ public class MedallionService {
      * @param guestId
      * @return
      */
-    public Medallion findMedallionByGuestID(String guestId) {
+    public List<Medallion> findMedallionByGuestID(String guestId) {
 
         String strGuestId = "\"" +guestId+ "\"";
 
@@ -122,7 +122,12 @@ public class MedallionService {
         query.setKey(strGuestId);
         query.setStale(Stale.FALSE);
 
-        return medallionRepository.findByGuestId(query);
+        //return medallionRepository.findByGuestId(query);
+        List<Medallion> medallions = medallionRepository.findByGuestId(query);
+        if(medallions.isEmpty()){throw new MedallionNotFoundException(guestId);}
+
+        return medallions;
+
     }
 
     public Medallion updateMedallion(Medallion updatedMedallion){

@@ -239,12 +239,12 @@ public class MedallionController {
      * @return
      */
     @RequestMapping(value="/v1/medallion-GUID/{guestId}", method=RequestMethod.GET)
-     public Medallion getMedallionGuestID(@PathVariable String guestId){
-        Medallion medallion = medallionService.findMedallionByGuestID(guestId);
-        if (medallion == null) {
+     public List<Medallion> getMedallionGuestID(@PathVariable String guestId){
+        List<Medallion> medallions = medallionService.findMedallionByGuestID(guestId);
+        if (medallions == null) {
             throw new MedallionNotFoundException(guestId);
         }
-        return medallion;
+        return medallions;
 
     }
 

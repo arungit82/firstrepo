@@ -11,35 +11,31 @@ import java.util.Date;
 /**
  * Created by ps.r.balamurugan on 26-08-2016.
  */
-@Document
+
 public class MedallionTE2 {
 
-    @Id
     private String id;
-    @Field @NotNull @NotEmpty
+     @NotNull @NotEmpty
     private String hardwareId;
-    @Field @NotNull @NotEmpty
+     @NotNull @NotEmpty
     private String bleId;
-    @Field @NotNull @NotEmpty
+     @NotNull @NotEmpty
     private String major;
-    @Field @NotNull @NotEmpty
+     @NotNull @NotEmpty
     private String minor;
-    @Field @NotNull @NotEmpty
+     @NotNull @NotEmpty
+    private String uiid;
+    @NotNull @NotEmpty
     private String uuid;
-    @Field @NotNull @NotEmpty
+   @NotNull @NotEmpty
     private String nfcId;
-    @Field @NotNull @NotEmpty
+     @NotNull @NotEmpty
     private String status;
-    @Field
-    private String reservationId;
-    @Field
-    private String _eventType;
-    @Field
-    private String _version;
-    @Field
-    private String _operation;
-    @Field
-    private String _timestamp;
+      private String reservationId;
+       private String _eventType;
+        private String _version;
+        private String _operation;
+       private String _timestamp;
 
     /**
      * Default Constructor
@@ -94,6 +90,14 @@ public class MedallionTE2 {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getUiid() {
+        return uiid;
+    }
+
+    public void setUiid(String uiid) {
+        this.uiid = uiid;
     }
 
     public String getNfcId() {
