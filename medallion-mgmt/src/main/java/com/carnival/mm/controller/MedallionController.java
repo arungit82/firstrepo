@@ -20,11 +20,17 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.json.JSONObject;
 import org.apache.http.HttpRequest;
 
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 
 import javax.validation.Valid;
@@ -174,12 +180,27 @@ public class MedallionController {
     @RequestMapping(value="/v1/medallion-assignment", method=RequestMethod.POST)
     public Medallion assignMedallion(@Valid @RequestBody MedallionAssignment medallionAssignment){
 
+        String GRANT_TYPE = "client_credentials";
+        String SCOPE = "cn%20ocean";
+        String CLIENT_ID = "my-trusted-client";
+        String CLIENT_SECRET = "";
+        String USERNAME = "user";
+        String PASSWORD = "testpass";
+        JSONObject resultJSON = new JSONObject();
+
         Medallion medallion = medallionAssignmentTaskService.assignMedallionToIndividual(medallionAssignment);
         MedallionTE2 medallionTE2 = getMedallionTE2(medallion);
 
         //New Code Added for invoking the URL
 
-        String restURL = "https://dev-trident.te2.biz/rest/v1/event-subscriptions/event";
+        RestTemplate restTemplate = new TestRestTemplate(CLIENT_ID,CLIENT_SECRET);
+        ResponseEntity<JSONObject> result = restTemplate.postForEntity("https://qa-trident.te2.biz/openam/oauth2/access_token?grant_type="+GRANT_TYPE+"&username="+USERNAME+"&password="+PASSWORD, null, JSONObject.class);
+        Assert.assertNotNull(result.getBody().get("access_token"));
+
+
+        String accessTokenURL = "https://qa-trident.te2.biz/openam/oauth2/access_token";
+
+        String restURL = "https://qa-trident.te2.biz/rest/v1/event-subscriptions/event";
 
         Gson gson = new Gson();
         String jsonInString = gson.toJson(medallionTE2);
