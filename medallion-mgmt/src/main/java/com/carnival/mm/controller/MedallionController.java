@@ -1,8 +1,5 @@
 package com.carnival.mm.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
 import com.carnival.mm.domain.Medallion;
 import com.carnival.mm.domain.MedallionAssignment;
 import com.carnival.mm.domain.MedallionTE2;
@@ -12,22 +9,10 @@ import com.carnival.mm.service.MedallionAssignmentTaskService;
 import com.carnival.mm.service.MedallionService;
 import com.carnival.mm.service.MedallionTE2Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.json.JSONObject;
-import org.apache.http.HttpRequest;
-
-import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -38,15 +23,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-
 import javax.validation.Valid;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -56,18 +36,13 @@ import java.util.List;
 @RequestMapping("/medallionservice")
 public class MedallionController {
 
+    public static final Logger log = LoggerFactory.getLogger(MedallionController.class);
     @Autowired
     MedallionService medallionService;
-
     @Autowired
     MedallionAssignmentTaskService medallionAssignmentTaskService;
-
     @Autowired
     MedallionTE2Service medallionTE2Service;
-
-
-    public static final Logger log = LoggerFactory.getLogger(MedallionController.class);
-
 
     /**
      * Endpoint for accessing a single medallion by the given hardwareId
@@ -136,7 +111,7 @@ public class MedallionController {
     }
 
     /**
-     * Endpoint for creating a new medallion instance
+     * Endpoint for receiving callback from xiConnect
      *
      * @param medallionTE2
      * @return
@@ -178,8 +153,13 @@ public class MedallionController {
         return medallion;
     }
 
+    /*Function to retrieve OAuth2 token from ForgeRock
+  Added by Anbu Vincent for Sprint 19
+  Date: Sept 6, 2016*/
+
     public String tokenPOSTcall() {
 
+        //Move the following to properties at a later time
         String accessToken = "";
         String GRANT_TYPE = "client_credentials";
         String SCOPE = "cn ocean";
@@ -244,8 +224,8 @@ public class MedallionController {
         //Headers
         HttpHeaders headers1 = new HttpHeaders();
         headers1.setContentType(MediaType.APPLICATION_JSON);
-        if(accessToken != null)
-        headers1.set("Authorization", "Bearer " + accessToken);
+        if (accessToken != null)
+            headers1.set("Authorization", "Bearer " + accessToken);
 
         //Body as JSON
         ObjectMapper mapper = new ObjectMapper();
@@ -269,53 +249,8 @@ public class MedallionController {
         System.out.println(result);
 
 
-       /* String restURL = "https://qa-trident.te2.biz/rest/v1/event-subscriptions/event";
-
-        Gson gson = new Gson();
-        String jsonInString = gson.toJson(medallionTE2);
-
-        JSONObject event = new JSONObject(jsonInString);
-
-        HttpPost httpPost = createConnectivity(restURL);
-
-        executeReq(jsonInString, httpPost);
-*/
         return medallion;
 
-    }
-
-    private HttpPost createConnectivity(String restUrl) {
-        HttpPost post = new HttpPost(restUrl);
-        post.setHeader("Content-Type", "application/json");
-        post.setHeader("Accept", "application/json");
-        post.setHeader("X-Stream", "true");
-        return post;
-    }
-
-    private void executeReq(String jsonData, HttpPost httpPost) {
-        try {
-            executeHttpRequest(jsonData, httpPost);
-        } catch (IOException e) {
-            System.out.println("ioException occured while sending http request : " + e);
-        } catch (Exception e) {
-            System.out.println("exception occured while sending http request : " + e);
-        } finally {
-            httpPost.releaseConnection();
-        }
-    }
-
-    private void executeHttpRequest(String jsonData, HttpPost httpPost) throws IOException {
-        HttpResponse response = null;
-        String line = "";
-        StringBuffer result = new StringBuffer();
-        httpPost.setEntity(new StringEntity(jsonData));
-        HttpClient client = HttpClientBuilder.create().build();
-        response = client.execute(httpPost);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        while ((line = reader.readLine()) != null) {
-            result.append(line);
-        }
-        System.out.println(result.toString());
     }
 
     /**
@@ -334,6 +269,10 @@ public class MedallionController {
 
     }
 
+    /*Function to build datastructure for the Event publication
+Added by Anbu Vincent for Sprint 19
+Date: Sept 6, 2016*/
+
     private MedallionTE2 getMedallionTE2(Medallion medallion) {
 
         MedallionTE2 medallionTE2 = new MedallionTE2();
@@ -348,6 +287,7 @@ public class MedallionController {
             medallionTE2.setMajor(medallion.getMajorId());
             medallionTE2.setMinor(medallion.getMinorId());
             medallionTE2.setUuid(medallion.getUuId());
+            medallionTE2.setUiid(medallion.getGuestId());
             medallionTE2.setNfcId(medallion.getNfcId());
             medallionTE2.setStatus(medallion.getStatus());
             medallionTE2.setReservationId(medallion.getReservationId());
@@ -358,7 +298,7 @@ public class MedallionController {
             //SimpleDateFormat ft = new SimpleDateFormat("yyyy.MM.dd hh:mm:ss");
             SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
             medallionTE2.set_timestamp(ft.format(dNow));
-            medallionTE2.setCallbackURL("http://fe71b312.ngrok.io/medallionservice/v1/medallion-callback");
+            //medallionTE2.setCallbackURL("http://fe71b312.ngrok.io/medallionservice/v1/medallion-callback");
         }
         return medallionTE2;
     }

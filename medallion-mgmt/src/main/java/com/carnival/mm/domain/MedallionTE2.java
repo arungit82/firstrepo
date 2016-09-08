@@ -44,7 +44,7 @@ public class MedallionTE2 {
     private String _version;
     private String _operation;
     private String _timestamp;
-    private String callbackURL;
+    //private String callbackURL;
 
     @NotNull
     @NotEmpty
@@ -168,11 +168,11 @@ public class MedallionTE2 {
         this._timestamp = _timestamp;
     }
 
-    public String getCallbackURL() {
+   /* public String getCallbackURL() {
         return callbackURL;
     }
 
     public void setCallbackURL(String callbackURL) {
         this.callbackURL = callbackURL;
-    }
+    }*/
 }

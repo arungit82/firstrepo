@@ -7,6 +7,8 @@
     <script>
     // <![CDATA[
         $( document ).ready(function() {
+            //No-cache is needed
+            $.ajaxSetup({ cache: false });
             $("#lookupBtn").click(function(){
                 if ($("#SearchCriteria").val() == "HardwareId"){
                     if($("#lkp_Field").val()!=""){

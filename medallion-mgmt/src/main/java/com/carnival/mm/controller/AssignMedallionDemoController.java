@@ -47,6 +47,9 @@ public class AssignMedallionDemoController {
 
     }
 
+/*End point creation for dummy UI for xiConnect integration
+  Added by Anbu Vincent for Sprint 19
+  Date: Sept 1, 2016*/
 
     @RequestMapping(value = "/demo_133", method = RequestMethod.GET)
     public ModelAndView demo_133() {
