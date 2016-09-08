@@ -11,6 +11,7 @@ import com.carnival.mm.exception.MedallionNotFoundException;
 import com.carnival.mm.service.MedallionAssignmentTaskService;
 import com.carnival.mm.service.MedallionService;
 import com.carnival.mm.service.MedallionTE2Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,9 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.util.Base64Utils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -38,7 +44,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -102,8 +110,8 @@ public class MedallionController {
      */
     @RequestMapping(value = "/v1/medallions", method = RequestMethod.GET)
     public List<Medallion> searchMedallions(@RequestParam(value = "firstName", required = false) String firstName,
-                                                  @RequestParam(value = "lastName", required = false) String lastName,
-                                                  @RequestParam(value = "reservationId", required = false) String reservationId) {
+                                            @RequestParam(value = "lastName", required = false) String lastName,
+                                            @RequestParam(value = "reservationId", required = false) String reservationId) {
 
         List<Medallion> medallions;
         if (StringUtils.isEmpty(reservationId)) {
@@ -137,10 +145,10 @@ public class MedallionController {
     public Medallion updateMedallionAssignment(@Valid @RequestBody MedallionTE2 medallionTE2) {
         // To do: Call back assignment
 
-        Medallion medallion = getMedallion(medallionTE2.getHardwareId()) ;
+        Medallion medallion = getMedallion(medallionTE2.getHardwareId());
         Date date = new Date();
 
-        medallion.setGuestId(medallionTE2.getId());
+/*        medallion.setGuestId(medallionTE2.getId());
         medallion.setHardwareId(medallionTE2.getHardwareId());
         medallion.setGuestId(medallionTE2.getUiid());
         medallion.setBleId(medallionTE2.getBleId());
@@ -152,17 +160,16 @@ public class MedallionController {
         medallion.setReservationId(medallionTE2.getReservationId());
         medallion.set__type(medallionTE2.get_eventType());
        // medallion.set_operation("create");
-        medallion.set__version(medallionTE2.get_version());
+        medallion.set__version(medallionTE2.get_version());*/
         medallion.setStatus("ASSIGNED");
 
         String dateStr = medallionTE2.get_timestamp();
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyyMMdd'T'hhmmss'Z'");
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
 
-        try{
+        try {
             date = ft.parse(dateStr);
             medallion.setUpdated(date);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex);
         }
 
@@ -171,36 +178,98 @@ public class MedallionController {
         return medallion;
     }
 
+    public String tokenPOSTcall() {
+
+        String accessToken = "";
+        String GRANT_TYPE = "client_credentials";
+        String SCOPE = "cn ocean";
+        String USER_CREDENTIALS = "medallionManagement:C0llabor8!";
+        String TOKEN_URL = "https://qa-trident.te2.biz/openam/oauth2/access_token";
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("grant_type", GRANT_TYPE);
+        //map.add("client_id", "medallionManagement");
+        //map.add("client_secret", "C0llabor8!");
+        map.add("scope", SCOPE);
+
+        String plainCreds = USER_CREDENTIALS;
+        byte[] plainCredsBytes = plainCreds.getBytes();
+        byte[] base64CredsBytes = Base64Utils.encode(plainCredsBytes);
+        String base64Creds = new String(base64CredsBytes);
+
+        HttpHeaders headers1 = new HttpHeaders();
+        headers1.add("Accept", MediaType.ALL_VALUE);
+        headers1.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers1.add("Authorization", "Basic " + base64Creds);
+
+        HttpEntity<MultiValueMap<String, String>> entity1 = new HttpEntity<MultiValueMap<String, String>>(map, headers1);
+
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        messageConverters.add(new FormHttpMessageConverter());
+        messageConverters.add(new StringHttpMessageConverter());
+        restTemplate.setMessageConverters(messageConverters);
+
+        //ResponseEntity<String> result = restTemplate.exchange("https://qa-trident.te2.biz/openam/oauth2/access_token",HttpMethod.POST,entity1,  String.class );
+        ResponseEntity<String> result = restTemplate.exchange(TOKEN_URL, HttpMethod.POST, entity1, String.class);
+        System.out.println(result);
+
+        String[] parsedString = result.toString().split("\"");
+
+        accessToken = parsedString[3];
+
+        return accessToken;
+    }
 
     /**
      * Endpoint for assigning a medallion to an individual
+     *
      * @param medallionAssignment
      * @return
      */
-    @RequestMapping(value="/v1/medallion-assignment", method=RequestMethod.POST)
-    public Medallion assignMedallion(@Valid @RequestBody MedallionAssignment medallionAssignment){
+    @RequestMapping(value = "/v1/medallion-assignment", method = RequestMethod.POST)
+    public Medallion assignMedallion(@Valid @RequestBody MedallionAssignment medallionAssignment) {
 
-        String GRANT_TYPE = "client_credentials";
-        String SCOPE = "cn%20ocean";
-        String CLIENT_ID = "my-trusted-client";
-        String CLIENT_SECRET = "";
-        String USERNAME = "user";
-        String PASSWORD = "testpass";
-        JSONObject resultJSON = new JSONObject();
+        String accessToken = null;
+        String medallionTE2AsString = "";
+        String EVENT_POST_URL = "https://demo-trident.te2.biz/rest/v1/event-subscriptions/event";
 
         Medallion medallion = medallionAssignmentTaskService.assignMedallionToIndividual(medallionAssignment);
         MedallionTE2 medallionTE2 = getMedallionTE2(medallion);
+        //Not needed to receive token for Demo environment
+        //accessToken = tokenPOSTcall();
 
-        //New Code Added for invoking the URL
+        //Headers
+        HttpHeaders headers1 = new HttpHeaders();
+        headers1.setContentType(MediaType.APPLICATION_JSON);
+        if(accessToken != null)
+        headers1.set("Authorization", "Bearer " + accessToken);
 
-        RestTemplate restTemplate = new TestRestTemplate(CLIENT_ID,CLIENT_SECRET);
-        ResponseEntity<JSONObject> result = restTemplate.postForEntity("https://qa-trident.te2.biz/openam/oauth2/access_token?grant_type="+GRANT_TYPE+"&username="+USERNAME+"&password="+PASSWORD, null, JSONObject.class);
-        Assert.assertNotNull(result.getBody().get("access_token"));
+        //Body as JSON
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            medallionTE2AsString = mapper.writeValueAsString(medallionTE2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        HttpEntity<String> entityBody = new HttpEntity<String>(medallionTE2AsString, headers1);
+
+        List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        messageConverters.add(new FormHttpMessageConverter());
+        messageConverters.add(new StringHttpMessageConverter());
+        restTemplate.setMessageConverters(messageConverters);
+
+        ResponseEntity<String> result = restTemplate.exchange(EVENT_POST_URL, HttpMethod.POST, entityBody, String.class);
+        System.out.println(result);
 
 
-        String accessTokenURL = "https://qa-trident.te2.biz/openam/oauth2/access_token";
-
-        String restURL = "https://qa-trident.te2.biz/rest/v1/event-subscriptions/event";
+       /* String restURL = "https://qa-trident.te2.biz/rest/v1/event-subscriptions/event";
 
         Gson gson = new Gson();
         String jsonInString = gson.toJson(medallionTE2);
@@ -210,45 +279,40 @@ public class MedallionController {
         HttpPost httpPost = createConnectivity(restURL);
 
         executeReq(jsonInString, httpPost);
-
+*/
         return medallion;
+
     }
 
-    private HttpPost createConnectivity(String restUrl)
-    {
+    private HttpPost createConnectivity(String restUrl) {
         HttpPost post = new HttpPost(restUrl);
         post.setHeader("Content-Type", "application/json");
         post.setHeader("Accept", "application/json");
-        post.setHeader("X-Stream" , "true");
+        post.setHeader("X-Stream", "true");
         return post;
     }
 
-    private void executeReq(String jsonData, HttpPost httpPost)
-    {
-        try{
+    private void executeReq(String jsonData, HttpPost httpPost) {
+        try {
             executeHttpRequest(jsonData, httpPost);
-        }
-        catch (IOException e){
-            System.out.println("ioException occured while sending http request : "+e);
-        }
-        catch(Exception e){
-            System.out.println("exception occured while sending http request : "+e);
-        }
-        finally{
+        } catch (IOException e) {
+            System.out.println("ioException occured while sending http request : " + e);
+        } catch (Exception e) {
+            System.out.println("exception occured while sending http request : " + e);
+        } finally {
             httpPost.releaseConnection();
         }
     }
 
-    private void executeHttpRequest(String jsonData,  HttpPost httpPost)  throws IOException
-    {
-        HttpResponse response=null;
+    private void executeHttpRequest(String jsonData, HttpPost httpPost) throws IOException {
+        HttpResponse response = null;
         String line = "";
         StringBuffer result = new StringBuffer();
         httpPost.setEntity(new StringEntity(jsonData));
         HttpClient client = HttpClientBuilder.create().build();
         response = client.execute(httpPost);
         BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-        while ((line = reader.readLine()) != null){
+        while ((line = reader.readLine()) != null) {
             result.append(line);
         }
         System.out.println(result.toString());
@@ -256,11 +320,12 @@ public class MedallionController {
 
     /**
      * Endpoint for getting medallion using Guest ID
+     *
      * @param guestId
      * @return
      */
-    @RequestMapping(value="/v1/medallion-GUID/{guestId}", method=RequestMethod.GET)
-     public List<Medallion> getMedallionGuestID(@PathVariable String guestId){
+    @RequestMapping(value = "/v1/medallion-GUID/{guestId}", method = RequestMethod.GET)
+    public List<Medallion> getMedallionGuestID(@PathVariable String guestId) {
         List<Medallion> medallions = medallionService.findMedallionByGuestID(guestId);
         if (medallions == null) {
             throw new MedallionNotFoundException(guestId);
@@ -269,15 +334,14 @@ public class MedallionController {
 
     }
 
-     private MedallionTE2 getMedallionTE2(Medallion medallion) {
+    private MedallionTE2 getMedallionTE2(Medallion medallion) {
 
         MedallionTE2 medallionTE2 = new MedallionTE2();
-       // Medallion medallion = medallionService.findMedallionByHardwareId(hardwareId);
+        // Medallion medallion = medallionService.findMedallionByHardwareId(hardwareId);
 
         if (medallion == null) {
             throw new MedallionNotFoundException(medallion.getId());
-        }
-        else{
+        } else {
             medallionTE2.setId(medallion.getId());
             medallionTE2.setHardwareId(medallion.getHardwareId());
             medallionTE2.setBleId(medallion.getBleId());
@@ -290,23 +354,25 @@ public class MedallionController {
             medallionTE2.set_eventType("MedallionAssignment");
             medallionTE2.set_operation("create");
             medallionTE2.set_version("1.0");
-            Date dNow = new Date( );
-            SimpleDateFormat ft = new SimpleDateFormat ("yyyy.MM.dd hh:mm:ss");
+            Date dNow = new Date();
+            //SimpleDateFormat ft = new SimpleDateFormat("yyyy.MM.dd hh:mm:ss");
+            SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
             medallionTE2.set_timestamp(ft.format(dNow));
+            medallionTE2.setCallbackURL("http://fe71b312.ngrok.io/medallionservice/v1/medallion-callback");
         }
         return medallionTE2;
     }
 
-     /**
+    /**
      * Endpoint for getting the count of unassigned medallions.  This is a throw away method only to be used for
      * purposes of the release 9 experience slice demo.
+     *
      * @return
      */
-    @RequestMapping(value="/v1/medallion-count", method=RequestMethod.GET)
-    public int medallionUnassignedCount(){
+    @RequestMapping(value = "/v1/medallion-count", method = RequestMethod.GET)
+    public int medallionUnassignedCount() {
         return medallionService.getAvailableMedallionCount();
     }
-
 
 
 }

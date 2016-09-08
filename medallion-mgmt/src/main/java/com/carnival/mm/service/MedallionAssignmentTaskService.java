@@ -51,7 +51,8 @@ public class MedallionAssignmentTaskService {
         if(medallion != null){
             //Check medallion status
             if(!medallion.getStatus().equals(MedallionStatus.UNASSIGNED.toString()))
-            {
+                //if(medallion.getStatus().equals(MedallionStatus.ASSIGNED.toString()))
+                {
                 //throw exception
                 throw new MedallionNotAssignableException(assignment.getHardwareId());
             }
@@ -67,6 +68,7 @@ public class MedallionAssignmentTaskService {
         medallion.setFirstName(assignment.getFirstName());
         medallion.setLastName(assignment.getLastName());
         medallion.setStatus(MedallionStatus.ASSIGNED.toString());
+        //medallion.setStatus(MedallionStatus.PENDING.toString());
 
         //US 148
         medallion.setUpdated(new Date());

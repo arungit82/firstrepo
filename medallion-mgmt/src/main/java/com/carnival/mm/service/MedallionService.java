@@ -140,6 +140,7 @@ public class MedallionService {
         BeanUtils.copyProperties(updatedMedallion, medallion);
         updatedMedallion.setUpdated(new Date());
         return medallionRepository.save(updatedMedallion);
+        //return updatedMedallion;
     }
 
     /**

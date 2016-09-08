@@ -15,27 +15,39 @@ import java.util.Date;
 public class MedallionTE2 {
 
     private String id;
-     @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String hardwareId;
-     @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String bleId;
-     @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String major;
-     @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String minor;
-     @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String uiid;
-    @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String uuid;
-   @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String nfcId;
-     @NotNull @NotEmpty
+    @NotNull
+    @NotEmpty
     private String status;
-      private String reservationId;
-       private String _eventType;
-        private String _version;
-        private String _operation;
-       private String _timestamp;
+    private String reservationId;
+    private String _eventType;
+    private String _version;
+    private String _operation;
+    private String _timestamp;
+    private String callbackURL;
+
+    @NotNull
+    @NotEmpty
 
     /**
      * Default Constructor
@@ -60,7 +72,7 @@ public class MedallionTE2 {
         this.hardwareId = hardwareId;
     }
 
-     public String getBleId() {
+    public String getBleId() {
         return bleId;
     }
 
@@ -145,7 +157,7 @@ public class MedallionTE2 {
     }
 
     public void set_operation(String _operation) {
-        this._operation  =  _operation;
+        this._operation = _operation;
     }
 
     public String get_timestamp() {
@@ -154,5 +166,13 @@ public class MedallionTE2 {
 
     public void set_timestamp(String _timestamp) {
         this._timestamp = _timestamp;
+    }
+
+    public String getCallbackURL() {
+        return callbackURL;
+    }
+
+    public void setCallbackURL(String callbackURL) {
+        this.callbackURL = callbackURL;
     }
 }
