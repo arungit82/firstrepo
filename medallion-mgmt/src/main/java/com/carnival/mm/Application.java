@@ -9,6 +9,7 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * This Spring Boot Application class serves as the entry point for bringing up the application
@@ -16,8 +17,9 @@ import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepos
 @SpringBootApplication
 //@EnableBinding(MedallionChannels.class)
 @Import({DatabaseConfig.class, SwaggerConfig.class})
-@ComponentScan(basePackages ="com.carnival.mm")
+@ComponentScan(basePackages ="com.carnival.mm.*")
 @EnableCouchbaseRepositories(basePackages = "com.carnival.mm.repository")
+@EnableScheduling
 public class Application extends SpringBootServletInitializer {
 
     @Override
