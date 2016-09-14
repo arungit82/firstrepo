@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.io.FileWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,6 +45,10 @@ public class MedallionController {
     @Autowired
     MedallionTE2Service medallionTE2Service;
 
+    /*
+    @Value("${log_file}")
+    String filePath;
+*/
     /**
      * Endpoint for accessing a single medallion by the given hardwareId
      *
@@ -248,6 +253,24 @@ public class MedallionController {
         ResponseEntity<String> result = restTemplate.exchange(EVENT_POST_URL, HttpMethod.POST, entityBody, String.class);
         System.out.println(result);
 
+        try {
+            String filePath = "request_response_data.txt";
+            FileWriter writer = new FileWriter(filePath, true);
+            writer.write(medallionTE2AsString);
+            writer.write("\n");
+            writer.write("=========================");
+            writer.write("\n");
+            writer.write("\n");
+            writer.write(result.toString());
+            writer.write("\n");
+            writer.write("\n");
+            writer.write("\n");
+            writer.write("\n");
+            writer.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         return medallion;
 

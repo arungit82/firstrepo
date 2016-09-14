@@ -1,0 +1,7 @@
+{"id":"815db34d-815e-4c26-b7b2-eb21e7a5e3d6","hardwareId":"M011-3650-0006","bleId":"001060AA3F91","major":"P","minor":"9","uiid":"101318901C","uuid":"7dc53df5-703e-30e4-8670-b1c468f47ff2","nfcId":"cc1f5f92","status":"ASSIGNED","reservationId":"","_eventType":"MedallionAssignment","_version":"1.0","_operation":"create","_timestamp":"2016-09-09T10:35:48Z"}
+=========================
+
+<200 OK,{Date=[Fri, 09 Sep 2016 14:35:49 GMT], X-Content-Type-Options=[nosniff], X-XSS-Protection=[1; mode=block], Cache-Control=[no-cache, no-store, max-age=0, must-revalidate], Pragma=[no-cache], Expires=[0], X-Frame-Options=[DENY], X-Application-Context=[bootstrap:demo:9987], Content-Length=[0], Keep-Alive=[timeout=15, max=100], Connection=[Keep-Alive], Content-Type=[text/plain; charset=UTF-8]}>
+
+
+
