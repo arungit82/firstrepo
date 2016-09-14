@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by ps.r.balamurugan on 26-08-2016.
  */
 
-public class MedallionTE2 {
+public class MedallionAssignEventPublish {
 
     private String id;
     @NotNull
@@ -52,7 +52,7 @@ public class MedallionTE2 {
     /**
      * Default Constructor
      **/
-    public MedallionTE2() {
+    public MedallionAssignEventPublish() {
         //required for data binding
     }
 

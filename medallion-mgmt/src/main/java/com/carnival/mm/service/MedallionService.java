@@ -2,7 +2,7 @@ package com.carnival.mm.service;
 
 import com.carnival.mm.domain.Medallion;
 import com.carnival.mm.domain.MedallionStatus;
-import com.carnival.mm.domain.MedallionTE2;
+import com.carnival.mm.domain.MedallionAssignEventPublish;
 import com.carnival.mm.exception.MedallionAlreadyExistsException;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
@@ -100,12 +100,12 @@ public class MedallionService {
      * @param hardwareId
      * @return
      */
-    public MedallionTE2 findMedallionByHardwareIdTE2(String hardwareId) {
+    public MedallionAssignEventPublish findMedallionByHardwareIdAssignEventPublish(String hardwareId) {
         Query query = new Query();
         query.setKey(hardwareId);
         query.setStale(Stale.FALSE);
 
-        return medallionRepository.findByHardwareIdTE2(query);
+        return medallionRepository.findByHardwareIdTAssignEventPublish(query);
     }
 
     /**

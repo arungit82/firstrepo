@@ -13,7 +13,7 @@ package com.carnival.mm.domain;
 
 
 @Document
-public class MedallionOphir {
+public class MedallionShippingInstruction {
 
     @Id
     private String id;
@@ -41,7 +41,7 @@ public class MedallionOphir {
     @Field
 
 
-    public MedallionOphir(){
+    public MedallionShippingInstruction(){
 
     }
     public String getId() {

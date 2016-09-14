@@ -5,3 +5,17 @@
 
 
 
+{"id":"45cc2af1-64d7-464e-952a-ac1f5123278b","hardwareId":"M011-3650-0008","bleId":"001060AA3F91","major":"P","minor":"9","uiid":"101318901C","uuid":"7dc53df5-703e-49b3-8670-b1c468f47ff2","nfcId":"cc1f5f92","status":"ASSIGNED","reservationId":"KZA23J","_eventType":"MedallionAssignment","_version":"1.0","_operation":"create","_timestamp":"2016-09-14T03:52:15Z"}
+=========================
+
+<200 OK,{Date=[Wed, 14 Sep 2016 19:52:16 GMT], X-Content-Type-Options=[nosniff], X-XSS-Protection=[1; mode=block], Cache-Control=[no-cache, no-store, max-age=0, must-revalidate], Pragma=[no-cache], Expires=[0], X-Frame-Options=[DENY], X-Application-Context=[bootstrap:demo:9987], Content-Length=[0], Keep-Alive=[timeout=15, max=100], Connection=[Keep-Alive], Content-Type=[text/plain; charset=UTF-8]}>
+
+
+
+{"id":"04a4f0b3-f0cf-4ac7-a28a-e6c6b1230570","hardwareId":"M011-3650-0007","bleId":"001060AA3F91","major":"P","minor":"9","uiid":"101318901C","uuid":"7dc53df5-703e-49b3-8670-b1c468f47ff2","nfcId":"cc1f5f92","status":"ASSIGNED","reservationId":"KZA23J","_eventType":"MedallionAssignment","_version":"1.0","_operation":"create","_timestamp":"2016-09-14T04:47:26Z"}
+=========================
+
+<200 OK,{Date=[Wed, 14 Sep 2016 20:47:28 GMT], X-Content-Type-Options=[nosniff], X-XSS-Protection=[1; mode=block], Cache-Control=[no-cache, no-store, max-age=0, must-revalidate], Pragma=[no-cache], Expires=[0], X-Frame-Options=[DENY], X-Application-Context=[bootstrap:demo:9987], Content-Length=[0], Keep-Alive=[timeout=15, max=100], Connection=[Keep-Alive], Content-Type=[text/plain; charset=UTF-8]}>
+
+
+
