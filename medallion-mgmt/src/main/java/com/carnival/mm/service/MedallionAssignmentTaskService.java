@@ -67,8 +67,8 @@ public class MedallionAssignmentTaskService {
         medallion.setGuestId(assignment.getUiid());
         medallion.setFirstName(assignment.getFirstName());
         medallion.setLastName(assignment.getLastName());
-        medallion.setStatus(MedallionStatus.ASSIGNED.toString());
-        //medallion.setStatus(MedallionStatus.PENDING.toString());
+        //medallion.setStatus(MedallionStatus.ASSIGNED.toString());
+        medallion.setStatus(MedallionStatus.PENDING.toString());
 
         //US 148
         medallion.setUpdated(new Date());

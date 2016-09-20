@@ -139,6 +139,7 @@ public class MedallionService {
         Medallion medallion = findMedallionByHardwareId(updatedMedallion.getHardwareId());
         BeanUtils.copyProperties(updatedMedallion, medallion);
         updatedMedallion.setUpdated(new Date());
+
         return medallionRepository.save(updatedMedallion);
         //return updatedMedallion;
     }

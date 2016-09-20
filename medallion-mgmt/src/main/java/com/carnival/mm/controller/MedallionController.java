@@ -77,7 +77,9 @@ public class MedallionController {
         if (!medallion.getHardwareId().equals(hardwareId)) {
             throw new MedallionCannotUpdateException(hardwareId);
         }
-        medallion.set__version((Float.parseFloat(medallion.get__version())+1)+"");
+        //medallion.set__version((Float.parseFloat(medallion.get__version())+1)+"");
+        //Don't update the record but create a new version
+        //return medallionService.createMedallion(medallion);
         return medallionService.updateMedallion(medallion);
     }
 
@@ -127,21 +129,20 @@ public class MedallionController {
         // To do: Call back assignment
 
         Medallion medallion = getMedallion(medallionAssignEventPublish.getHardwareId());
+
+        System.out.println("Inside Callback");
+        ObjectMapper mapper = new ObjectMapper();
+        String medallionAsString = "";
+        try {
+            medallionAsString = mapper.writeValueAsString(medallion);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(medallionAsString);
+
+
         Date date = new Date();
 
-/*        medallion.setGuestId(medallionTE2.getId());
-        medallion.setHardwareId(medallionTE2.getHardwareId());
-        medallion.setGuestId(medallionTE2.getUiid());
-        medallion.setBleId(medallionTE2.getBleId());
-        medallion.setMajorId(medallionTE2.getMajor());
-        medallion.setMinorId(medallionTE2.getMinor());
-        medallion.setUuId(medallionTE2.getUuid());
-        medallion.setNfcId(medallionTE2.getNfcId());
-        medallion.setStatus(medallionTE2.getStatus());
-        medallion.setReservationId(medallionTE2.getReservationId());
-        medallion.set__type(medallionTE2.get_eventType());
-       // medallion.set_operation("create");
-        medallion.set__version(medallionTE2.get_version());*/
         medallion.setStatus("ASSIGNED");
 
         String dateStr = medallionAssignEventPublish.get_timestamp();
@@ -170,7 +171,7 @@ public class MedallionController {
         String GRANT_TYPE = "client_credentials";
         String SCOPE = "cn ocean";
         String USER_CREDENTIALS = "medallionManagement:C0llabor8!";
-        String TOKEN_URL = "https://qa-trident.te2.biz/openam/oauth2/access_token";
+        String TOKEN_URL = "https://dev-trident.te2.biz/openam/oauth2/access_token";
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("grant_type", GRANT_TYPE);
@@ -220,12 +221,15 @@ public class MedallionController {
 
         String accessToken = null;
         String medallionAssignEventPublishAsString = "";
-        String EVENT_POST_URL = "https://demo-trident.te2.biz/rest/v1/event-subscriptions/event";
+        //xiConnect Demo Env
+        //String EVENT_POST_URL = "https://demo-trident.te2.biz/rest/v1/event-subscriptions/event";
+        //xiConnect QA Env
+        String EVENT_POST_URL = "https://dev-trident.te2.biz/rest/v1/event-subscriptions/event";
 
         Medallion medallion = medallionAssignmentTaskService.assignMedallionToIndividual(medallionAssignment);
         MedallionAssignEventPublish medallionAssignEventPublish = getMedallionAssignEventPublish(medallion);
         //Not needed to receive token for Demo environment
-        //accessToken = tokenPOSTcall();
+        accessToken = tokenPOSTcall();
 
         //Headers
         HttpHeaders headers1 = new HttpHeaders();
@@ -322,7 +326,6 @@ Date: Sept 6, 2016*/
             //SimpleDateFormat ft = new SimpleDateFormat("yyyy.MM.dd hh:mm:ss");
             SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
             medallionAssignEventPublish.set_timestamp(ft.format(dNow));
-            //medallionTE2.setCallbackURL("http://fe71b312.ngrok.io/medallionservice/v1/medallion-callback");
         }
         return medallionAssignEventPublish;
     }
