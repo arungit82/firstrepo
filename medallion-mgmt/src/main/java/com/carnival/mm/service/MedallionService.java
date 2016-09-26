@@ -137,8 +137,18 @@ public class MedallionService {
             throw new MedallionNotFoundException(updatedMedallion.getId());
         }
         Medallion medallion = findMedallionByHardwareId(updatedMedallion.getHardwareId());
+        //Update current Medallion
+        medallion.setDocument_type("history");
+        medallionRepository.save(medallion);
+
+        //Create new Medallion
         BeanUtils.copyProperties(updatedMedallion, medallion);
         updatedMedallion.setUpdated(new Date());
+
+        //Incrementing current version
+        updatedMedallion.setId(UUID.randomUUID().toString());
+        updatedMedallion.setDocument_type("current");
+        updatedMedallion.set__version((Float.parseFloat(updatedMedallion.get__version())+1)+"");
 
         return medallionRepository.save(updatedMedallion);
         //return updatedMedallion;
