@@ -16,29 +16,45 @@ public class Medallion {
 
     @Id
     private String id;
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String hardwareId;
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String bleId;
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String majorId;
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String minorId;
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String nfcId;
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String uuId;
     @Field
     private String rssId;
     @Field
     private String batteryVoltageLevel;
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String status;
 
     @Field
     private String caseId;
 
-    @Field @NotNull @NotEmpty
+    @Field
+    @NotNull
+    @NotEmpty
     private String guestId;
     @Field
     private String firstName;
@@ -61,7 +77,8 @@ public class Medallion {
     private String __type = "medallion";
     @Field
     private String __version = "1.0";
-
+    @Field
+    private String document_type;
 
 
     /**
@@ -246,4 +263,14 @@ public class Medallion {
     public void set__version(String __version) {
         this.__version = __version;
     }
+
+    public String getDocument_type() {
+        return document_type;
+    }
+
+    public void setDocument_type(String documentType) {
+        this.document_type = documentType;
+    }
+
 }
+
