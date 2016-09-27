@@ -197,4 +197,19 @@ public class MedallionService {
 
         return medallionRepository.findByStatus(query).size();
     }
+
+    /**
+     * Find Medallion History from the datastore by hardwareId
+     *
+     * @param hardwareId
+     * @return
+     */
+    public List<Medallion> findMedallionHistoryByHardwareId(String hardwareId) {
+        Query query = new Query();
+        query.setKey(hardwareId);
+        query.setStale(Stale.FALSE);
+        query.setDescending(true);
+
+        return medallionRepository.findByVersion(query);
+    }
 }

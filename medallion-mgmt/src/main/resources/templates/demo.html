@@ -3,7 +3,105 @@
 <head>
     <title>Experience Slice: Release 9</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="/style/style.css" media="all" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <style>
+
+        body{
+    font-size: 13px;
+    margin: 0px;
+    position: relative;
+    top: 0px;
+    font-family: Lato,Helvetica,Arial,sans-serif;
+}
+header {
+    position: relative;
+    height: 100px;
+    background: #1B1F23;
+    border-bottom: 3px solid #2196F3;
+    color: #fff;
+    box-shadow: 0px 0px 10px #000;
+}
+.headerText h2 {
+    top: 25px;
+    position: relative;
+    text-align: center;
+    color: rgb(223, 222, 222);
+}
+.logo {
+    float: left;
+    height: 100px;
+}
+.logo img {
+    height: 100px;
+}
+.headerText {
+    position: relative;
+    float: left;
+    width: 1200px;
+}
+.container {
+    background: #F5F5F5;
+}
+.bottomFull {
+    background: #fff;
+}
+input, select#SearchCriteria {
+    width: 350px;
+    padding: 11px;
+    border: 1px solid rgba(0, 0, 0, 0.27);
+    background: #f5f5f5;
+  /*  border-top: 0px solid #000;
+    border-right: 0px solid #000;
+    border-left: 0px solid #000; */
+}
+input:focus, select#SearchCriteria:focus {
+    outline: none;
+}
+select#SearchCriteria {
+    width: 150px;
+}
+button {
+    background: rgb(0,183,234);
+    background: -moz-linear-gradient(top, rgba(0,183,234,1) 0%, rgba(0,158,195,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(0,183,234,1) 0%,rgba(0,158,195,1) 100%);
+    background: linear-gradient(to bottom, rgba(0,183,234,1) 0%,rgba(0,158,195,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00b7ea', endColorstr='#009ec3',GradientType=0 );
+    border: 0px;
+    padding: 10px;
+    width: 100px;
+    border-radius: 3px;
+}
+.bottomInventory {
+    border-right: 1px solid #cfcfcf;
+}
+.inventory {
+    width: 400px;
+}
+.hardwareID {
+    margin-bottom: 15px;
+}
+input#hardware {
+    margin-right: 10px;
+}
+#medallionHistory td, #medallionHistory th {
+    border: 1px solid #dddddd;
+    padding: 0.500em;
+}
+#medallionHistory table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
+@media (min-width: 1300px){
+    .mainContainer, .bottomContainer, .headerContainer {
+        max-width: 1300px;
+        margin: auto;
+    }
+}
+    </style>
     <script>
     // <![CDATA[
         $( document ).ready(function() {
@@ -73,14 +171,63 @@
             $("#resetBtn").click(function(){
                 alert("Reset!");
             });
+
+            $("#hardwarebutton").click(function(){
+            var hardwareId = $("#hardware").val();
+
+            $.ajax({
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        type: "GET",
+                        url: "/medallionservice/v1/medallionHistory/"+hardwareId,
+                       // data: JSON.stringify(assignment),
+                        success: function(dataSet){
+                        $("#location").html('');
+$("#location").append(
+ "<tbody><tr><th>Guest Id</th><th>Status</th><th>Timestamp</th><th>Version #</th></tr></tbody>"
+);
+ $.each(dataSet,function(d,results){
+
+        $("#location tbody").append(
+                    "<tr>"
+                      +"<td>"+results.guestId+"</td>"
+                      +"<td>"+results.status+"</td>"
+                       +"<td>"+results.updated+"</td>"
+                        +"<td>"+results.__version+"</td>"
+                    +"</tr>" )
+                });
+
+                        },
+                        error: function(error){
+                        alert(error);
+                        },
+                        dataType: "json"
+                    });
+
+
+            });
         });
     // ]]>
     </script>
 </head>
-<body style="width:70%; margin:auto; font-family:Arial;">
-<h2>Release 9 Experience Slice: Assign Medallion to Guest as a Crew Member</h2>
-
-    <div style="float:left; width:45%; border-right:solid lightgrey 1px; padding: 25px 0px 350px;">
+<body>
+<div class="wrapper">
+    <header>
+        <div class="headerContainer">
+            <div class="logo">
+              <!--  <img src="carnival.jpg"/> -->
+            </div>
+            <div class="headerText">
+                <h2>Release 10 Experience Slice: Assign Medallion to Guest as a Crew Member</h2>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="mainFull">
+        <div class="mainContainer">
+    <div style="float:left; width:45%; border-right:solid lightgrey 1px; padding: 25px 0px 158px;">
         <h3 style="text-align:center;">Assign Medallion</h3>
         <div style="text-align:center;">
             <div style="padding:3px 0px;">
@@ -118,15 +265,43 @@
         </div>
         <pre id="medallionJSON" style="background:#fafafa; font-size:12px; font-family:courier; border:solid grey 1px; width:90%; height:250px; padding:10px; margin:auto; margin-top:25px; overflow:scroll"></pre>
     </div>
-
+        </div>
+        </div>
     <div style="clear:both;"></div>
-    <div style="border-top: solid lightgrey 1px;">
-        <h3 style="text-align:center;">Inventory</h3>
-        <div style="text-align:center; font-size:18px; border:solid grey 1px; width:200px; height:200px; padding:10px; margin:auto; margin-top:25px;">
-            <div id="medallionCount" style="font-size:125px; margin-bottom:15px;" th:text="${inventory}"></div>
-            <div>Available Medallions</div>
+    <div class="bottomFull">
+        <div class="bottomContainer">
+        <div id="bottomLeft" class ="bottomInventory" style="float:left;width:45%;margin-bottom: 50px;">
+            <div>
+                <h3 style="text-align:center;">Inventory</h3>
+                <div class="inventory" style="text-align:center; font-size:18px; border:solid grey 1px; height:120px; padding:10px; margin:auto; margin-top:25px;">
+                    <div id="medallionCount" style="font-size:125px; margin-bottom:15px;" th:text="${inventory}"></div>
+                    <div>Available Medallions</div>
+                </div>
+            </div>
+        </div>
+        <div id="bottomLeft" style="float:left;width:50%;margin-left: 4%;">
+            <div id="medallionHistory">
+                <h3 style="text-align:center;">History</h3>
+                <div class="hardwareID">
+                    <input type="text" name="hardwareId" id="hardware" placeholder="Enter hardware ID" />
+                    <button id="hardwarebutton">Search</button>
+                </div>
+                <div class="hardwareTable">
+
+                </div>
+                <table id="location" border='1'>
+                    <tr>
+                        <th>Guest Id</th>
+                        <th>Status</th>
+                        <th>Timestamp</th>
+                        <th>Version #</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
         </div>
     </div>
-
+    </div>
+</div>
 </body>
 </html>

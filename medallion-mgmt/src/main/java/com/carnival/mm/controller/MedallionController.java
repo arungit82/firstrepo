@@ -341,6 +341,21 @@ Date: Sept 6, 2016*/
         return medallionService.getAvailableMedallionCount();
     }
 
+    /**
+     * Endpoint for getting medallion History using Hardware ID
+     *
+     * @param hardwareId
+     * @return
+     */
+    @RequestMapping(value = "/v1/medallionHistory/{hardwareId}", method = RequestMethod.GET)
+    public List<Medallion> getMedallionHistoryByHardwareID(@PathVariable String hardwareId) {
+        List<Medallion> medallionsHistory = medallionService.findMedallionHistoryByHardwareId(hardwareId);
+        if (medallionsHistory == null) {
+            throw new MedallionNotFoundException(hardwareId);
+        }
+        return medallionsHistory;
+
+    }
 
 }
 

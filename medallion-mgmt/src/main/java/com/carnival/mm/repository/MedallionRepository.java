@@ -58,4 +58,12 @@ public interface MedallionRepository extends CrudRepository<Medallion, String> {
      * @return
      */
     List<Medallion> findByStatus(Query status);
+
+    /**
+     * Repository method for corresponding view byVersion
+     * @return
+     */
+    List<Medallion> findByVersion(Query hardwareId);
+
+
 }
