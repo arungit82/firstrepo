@@ -166,12 +166,12 @@ public class MedallionController {
 
     public String tokenPOSTcall() {
 
-        //Move the following to properties at a later time
+        //FIXME: Move the following to properties at a later time
         String accessToken = "";
         String GRANT_TYPE = "client_credentials";
         String SCOPE = "cn ocean";
         String USER_CREDENTIALS = "medallionManagement:C0llabor8!";
-        String TOKEN_URL = "https://dev-trident.te2.biz/openam/oauth2/access_token";
+        String TOKEN_URL = "https://qa-trident.te2.biz/openam/oauth2/access_token";
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
         map.add("grant_type", GRANT_TYPE);
@@ -224,7 +224,7 @@ public class MedallionController {
         //xiConnect Demo Env
         //String EVENT_POST_URL = "https://demo-trident.te2.biz/rest/v1/event-subscriptions/event";
         //xiConnect QA Env
-        String EVENT_POST_URL = "https://dev-trident.te2.biz/rest/v1/event-subscriptions/event";
+        String EVENT_POST_URL = "https://qa-trident.te2.biz/rest/v1/event-subscriptions/event";
 
         Medallion medallion = medallionAssignmentTaskService.assignMedallionToIndividual(medallionAssignment);
         MedallionAssignEventPublish medallionAssignEventPublish = getMedallionAssignEventPublish(medallion);
