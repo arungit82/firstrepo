@@ -90,7 +90,9 @@ public class MedallionControllerTest {
         this.medallion.setUuId("testUuid");
         this.medallion.setStatus("ASSIGNED");
         this.medallion.setFirstName("FirstName");
+        this.medallion.setGuestId("123456");
         this.medallion.setLastName("LastName");
+        this.medallion.setDocument_type("current");
 
         this.medallionList.add(this.medallion);
     }
