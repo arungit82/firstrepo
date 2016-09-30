@@ -2,6 +2,7 @@ package com.carnival.mm.controller;
 
 import com.carnival.mm.Application;
 import com.carnival.mm.domain.Medallion;
+import com.carnival.mm.repository.MedallionRepository;
 import com.carnival.mm.service.MedallionService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,6 +48,8 @@ public class MedallionControllerTest {
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
             Charset.forName("utf8"));
+    @Mock
+    MedallionRepository medallionRepository;
 
     private MockMvc mockMvc;
     private Medallion medallion;
@@ -55,6 +58,9 @@ public class MedallionControllerTest {
 
     @InjectMocks
     private MedallionController medallionController;
+
+    @InjectMocks
+    private AssignMedallionDemoController assignMedallionDemoController;
 
     @Mock
     private MedallionService medallionService;
@@ -164,7 +170,6 @@ public class MedallionControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName", is("ChangedFirstName")));
     }
-
 
 
     protected String json(Object o) throws IOException {
