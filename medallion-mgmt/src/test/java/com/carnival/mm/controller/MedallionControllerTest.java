@@ -1,10 +1,9 @@
 package com.carnival.mm.controller;
 
-import com.carnival.mm.Application;
 import com.carnival.mm.domain.Medallion;
 import com.carnival.mm.repository.MedallionRepository;
 import com.carnival.mm.service.MedallionService;
-import org.junit.Assert;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,18 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -41,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by david.c.hoak on 6/23/2016.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = PersistenceContext.class)
 @WebAppConfiguration
 public class MedallionControllerTest {
 
@@ -59,24 +56,12 @@ public class MedallionControllerTest {
     @InjectMocks
     private MedallionController medallionController;
 
-    @InjectMocks
-    private AssignMedallionDemoController assignMedallionDemoController;
-
     @Mock
     private MedallionService medallionService;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
-    @Autowired
-    void setConverters(HttpMessageConverter<?>[] converters) {
-
-        this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream().filter(
-                hmc -> hmc instanceof MappingJackson2HttpMessageConverter).findAny().get();
-
-        Assert.assertNotNull("the JSON message converter must not be null",
-                this.mappingJackson2HttpMessageConverter);
-    }
 
     @Before
     public void setup() throws Exception {
@@ -173,9 +158,7 @@ public class MedallionControllerTest {
 
 
     protected String json(Object o) throws IOException {
-        MockHttpOutputMessage mockHttpOutputMessage = new MockHttpOutputMessage();
-        this.mappingJackson2HttpMessageConverter.write(
-                o, MediaType.APPLICATION_JSON, mockHttpOutputMessage);
-        return mockHttpOutputMessage.getBodyAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(o);
     }
 }
