@@ -1,8 +1,6 @@
 package com.carnival.mm.controller;
 
-import com.carnival.mm.domain.Medallion;
-import com.carnival.mm.domain.MedallionAssignment;
-import com.carnival.mm.domain.MedallionAssignEventPublish;
+import com.carnival.mm.domain.*;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
 import com.carnival.mm.service.MedallionAssignmentTaskService;
@@ -30,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 /**
  * Created by david.c.hoak on 6/22/2016.
  */
@@ -357,5 +358,112 @@ Date: Sept 6, 2016*/
 
     }
 
+    /**
+     * Endpoint for getting the orders from xiconnect and process the orders
+     *
+     * @param orderDetails
+     * @return
+     */
+
+    @RequestMapping(value = "/v1/guestOrders",method = RequestMethod.POST)
+    public ResponseEntity<List<GuestOrder>> createGuestOrder(@RequestBody String orderDetails){
+        log.info("Inside MedallionController-->createGuestOrder()");
+        List<GuestOrder> guestOrderList = parseAndCreateOrder(orderDetails);
+        List<GuestOrder> savedGuestOrders = new ArrayList<>();
+        //Loop Orders and save to datastore
+        for(GuestOrder order:guestOrderList){
+            savedGuestOrders.add(medallionService.createGuestOrder(order));
+        }
+        return new ResponseEntity<List<GuestOrder>>(savedGuestOrders,HttpStatus.CREATED);
+    }
+    private List<GuestOrder> parseAndCreateOrder(String orderDetails){
+        List<GuestOrder> orderList = new ArrayList<>();
+        try {
+            String firstName,lastName,addressId,organization,street1,street2,city,region,country,zipPostalCode,phoneNumber;
+            GuestOrder shippingOrder = null;
+            ShippingAddress address= null;
+            String productCode;
+            JSONObject shippingAddress = null;
+            JSONObject order = new JSONObject(orderDetails);
+            JSONObject header = order.getJSONObject("header");
+            String voyageId = header.getString("voyageId");
+            //Fetching Shipment JSON data
+            JSONArray shipmentInfo = header.getJSONArray("shipment");
+
+            //Looping Shipping Data Array and preparing the order List
+            for(int i=0;i<shipmentInfo.length();i++){
+                JSONObject shippingObj = (JSONObject)shipmentInfo.get(i);
+
+               if(shippingObj !=null){
+                   shippingOrder = new GuestOrder();
+                   JSONArray lineItemArray = shippingObj.getJSONArray("lineItem");
+                   //Loop LineItem Array and fetch data only if product code is Medallion
+                   for(int j=0;j<lineItemArray.length();j++){
+                       JSONObject lineItemObj = (JSONObject)lineItemArray.get(j);
+                       if(lineItemObj != null){
+                           productCode = lineItemObj.getString("productCode");
+                           //Set guest id only if the product code is Medallion
+                           if(productCode != null && productCode.equals("Medallion")){
+                               shippingOrder.setGuestId(lineItemObj.getString("guestId"));
+                           }
+                       }
+                   }
+                   //Set Shipping address only if guest Id is present
+                  if(shippingOrder != null && !shippingOrder.getGuestId().equals("")) {
+                      shippingAddress = shippingObj.getJSONObject("shippingAddress");
+                      //Set Shipping Address
+                      address = setShippingAddress(shippingAddress,address,shippingOrder);
+                      shippingOrder.setShippingAddress(address);
+                      shippingOrder.setVoyageId(voyageId);
+                    // Have to get voyage date & reservation id by calling another API
+                      //Temporarily hardcoding voyage date & reservation id--Remove this later
+                      shippingOrder.setVoyageDate(String.valueOf(new Date()));
+                      shippingOrder.setReservationId("12345");
+
+                      orderList.add(shippingOrder);
+                  }
+               }
+            }
+
+            System.out.println("shippingOrder-->"+orderList);
+        } catch (JSONException e) {
+            log.error("An error occured while parsing JSON "+e);
+            e.printStackTrace();
+        }
+        return orderList;
+    }
+
+    private ShippingAddress setShippingAddress(JSONObject shippingAddress,ShippingAddress address,GuestOrder shippingOrder){
+        String firstName,lastName,addressId,organization,street1,street2,city,region,country,zipPostalCode,phoneNumber;
+        firstName = shippingAddress.getString("firstName");
+        lastName = shippingAddress.getString("lastName");
+        addressId = shippingAddress.getString("addressId");
+        //   organization = (shippingAddress.getString("organization") != null)?(shippingAddress.getString("organization")):"";
+        organization = (shippingAddress.get("organization") instanceof String) ? (shippingAddress.getString("organization")) : "";
+        street1 = shippingAddress.getString("street1");
+        street2 = shippingAddress.getString("street2");
+        city = shippingAddress.getString("city");
+        region = shippingAddress.getString("region");
+        country = shippingAddress.getString("country");
+        zipPostalCode = shippingAddress.getString("zipPostalCode");
+        phoneNumber = shippingAddress.getString("phoneNumber");
+
+        address = new ShippingAddress();
+        address.setFirstName(firstName);
+        address.setLastName(lastName);
+        address.setAddressId(addressId);
+        address.setOrganization(organization);
+        address.setStreet1(street1);
+        address.setStreet2(street2);
+        address.setCity(city);
+        address.setRegion(region);
+        address.setCountry(country);
+        address.setZipPostalCode(zipPostalCode);
+        address.setPhoneNumber(phoneNumber);
+
+        shippingOrder.setFirstName(firstName);
+        shippingOrder.setLastName(lastName);
+        return address;
+    }
 }
 

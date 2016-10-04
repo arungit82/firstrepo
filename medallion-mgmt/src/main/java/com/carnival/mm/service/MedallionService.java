@@ -1,11 +1,14 @@
 package com.carnival.mm.service;
 
+import com.carnival.mm.domain.GuestOrder;
 import com.carnival.mm.domain.Medallion;
 import com.carnival.mm.domain.MedallionStatus;
 import com.carnival.mm.domain.MedallionAssignEventPublish;
+import com.carnival.mm.exception.GuestOrderCannotUpdateException;
 import com.carnival.mm.exception.MedallionAlreadyExistsException;
 import com.carnival.mm.exception.MedallionCannotUpdateException;
 import com.carnival.mm.exception.MedallionNotFoundException;
+import com.carnival.mm.repository.GuestOrderRepository;
 import com.carnival.mm.repository.MedallionRepository;
 import com.couchbase.client.protocol.views.ComplexKey;
 import com.couchbase.client.protocol.views.Query;
@@ -30,6 +33,9 @@ public class MedallionService {
 
     @Autowired
     private MedallionRepository medallionRepository;
+
+    @Autowired
+    private GuestOrderRepository guestOrderRepository;
 
     private static Logger log = LoggerFactory.getLogger(MedallionService.class);
 
@@ -211,5 +217,25 @@ public class MedallionService {
         query.setDescending(true);
 
         return medallionRepository.findByVersion(query);
+    }
+
+    /**
+     * Creates a new instance of the Guest Order in the datastore
+     *
+     * @param order
+     * @return
+     */
+    public GuestOrder createGuestOrder(GuestOrder order) {
+
+        //Check if the id exists, indicating that an update is being attempted
+        if(order.getId() != null && !order.getId().isEmpty()){
+            //throw exception
+            throw new GuestOrderCannotUpdateException(order.getId());
+        }
+
+        order.setId(UUID.randomUUID().toString());
+        order.setCreated(new Date());
+
+        return guestOrderRepository.save(order);
     }
 }
