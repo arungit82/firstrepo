@@ -366,14 +366,15 @@ Date: Sept 6, 2016*/
      */
 
     @RequestMapping(value = "/v1/guestOrders",method = RequestMethod.POST)
-    public void createGuestOrder(@RequestBody String orderDetails){
+    public ResponseEntity<List<GuestOrder>> createGuestOrder(@RequestBody String orderDetails){
         log.info("Inside MedallionController-->createGuestOrder()");
         List<GuestOrder> guestOrderList = parseAndCreateOrder(orderDetails);
+        List<GuestOrder> savedGuestOrders = new ArrayList<>();
         //Loop Orders and save to datastore
         for(GuestOrder order:guestOrderList){
-            medallionService.createGuestOrder(order);
+            savedGuestOrders.add(medallionService.createGuestOrder(order));
         }
-
+        return new ResponseEntity<List<GuestOrder>>(savedGuestOrders,HttpStatus.CREATED);
     }
     private List<GuestOrder> parseAndCreateOrder(String orderDetails){
         List<GuestOrder> orderList = new ArrayList<>();
