@@ -3,7 +3,7 @@ package com.carnival.mm;
 import com.carnival.mm.controller.MedallionController;
 import com.carnival.mm.domain.EventSubscriptionCallback;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+//import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +32,7 @@ public class EventSubscriptionRegistration {
         //FIXME: Make it into the propoerties
         String ngrok_base = "http://1f33d830.ngrok.io/";
         String CALLBACK_URL = ngrok_base + "medallionservice/v1/medallion-callback";
+       // String CALLBACK_URL = ngrok_base + "medallionservice/v1/guestOrders";
         String MEDALLION_ASSIGNMENT = "MedallionAssignment";
         //xiConnect QA Env
         String EVENT_POST_URL = "https://qa-trident.te2.biz/rest/v1/event-subscriptions/event";
@@ -42,7 +43,7 @@ public class EventSubscriptionRegistration {
 
         EventSubscriptionCallback eventSubscriptionCallback = new EventSubscriptionCallback();
         eventSubscriptionCallback.setCallbackURL(CALLBACK_URL);
-        eventSubscriptionCallback.setEventType(MEDALLION_ASSIGNMENT);
+        eventSubscriptionCallback.set_eventType(MEDALLION_ASSIGNMENT);
 
         //Headers
         HttpHeaders headers1 = new HttpHeaders();
@@ -72,7 +73,7 @@ public class EventSubscriptionRegistration {
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
-            log.error(ExceptionUtils.getStackTrace(e));
+          //  log.error(ExceptionUtils.getStackTrace(e));
         }
 
         try {

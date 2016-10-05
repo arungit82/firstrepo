@@ -12,7 +12,7 @@ public class EventSubscriptionCallback {
     @NotNull
     private String callbackURL;
     @NotEmpty @NotNull
-    private String eventType;
+    private String _eventType;
 
     public String getCallbackURL() {
         return callbackURL;
@@ -22,12 +22,11 @@ public class EventSubscriptionCallback {
         this.callbackURL = callbackURL;
     }
 
-    public String getEventType() {
-        return eventType;
+    public String get_eventType() {
+        return _eventType;
     }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    public void set_eventType(String _eventType) {
+        this._eventType = _eventType;
     }
-
 }
